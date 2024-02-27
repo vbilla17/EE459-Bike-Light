@@ -1,0 +1,8 @@
+Record=TopLevelDocument|FileName=3v3Regulator.SchDoc|SheetNumber=2
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=5VRegulator.SchDoc|SheetNumber=3
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=BikeLoggerTop.SchDoc|SheetNumber=4
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=Connectors.SchDoc|SheetNumber=5
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=CPU.SchDoc|SheetNumber=1
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=DebouncedButtons.SchDoc|SheetNumber=6
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=GPS.SchDoc|SheetNumber=7
+Record=NoMainPathDocument|SourceDocument=3v3Regulator.SchDoc|FileName=LEDs.SchDoc|SheetNumber=8
