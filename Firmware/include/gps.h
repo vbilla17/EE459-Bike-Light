@@ -29,7 +29,10 @@
 #define MAX_SPEED_LEN 6 // kk.kkk
 #define MAX_HEADING_LEN 6 // ddd.dd
 
-// GPS struct replaces the GPS class
+/**
+ * @brief Struct to hold data received from GPS
+ * 
+ */
 typedef struct {
     // Add 1 to all char arrays to include null termination
     char time[MAX_TIME_LEN + 1];
@@ -39,19 +42,80 @@ typedef struct {
     char lon_dir[MAX_LON_DIR_LEN + 1];
     char speed[MAX_SPEED_LEN + 1];
     char heading[MAX_HEADING_LEN + 1];
-
     bool valid;
 } GPSData;
 
-// Function prototypes, replacing member functions of the class
+/**
+ * @brief Initializes values of GPS struct
+ * 
+ * @param gps 
+ */
 void GPS_init(GPSData* gps);
+
+/**
+ * @brief Parses received NMEA sentence and stores necessary
+ *        info in GPS struct
+ * 
+ * @param gps 
+ * @param sentence 
+ */
 void GPS_parse_gprmc(GPSData* gps, char* sentence);
+
+/**
+ * @brief Sets status of GPS data structure to invalid
+ * 
+ * @param gps 
+ */
 void GPS_invalidate(GPSData* gps);
+
+/**
+ * @brief Retrieves time from GPS struct
+ * 
+ * @param gps 
+ * @return char* 
+ */
 char* GPS_get_time(GPSData* gps);
+
+/**
+ * @brief Retrieves latitude from GPS struct 
+ * 
+ * @param gps 
+ * @return char* 
+ */
 char* GPS_get_lat(GPSData* gps);
+
+/**
+ * @brief Retrieves longitude from GPS struct
+ * 
+ * @param gps 
+ * @return char* 
+ */
 char* GPS_get_lon(GPSData* gps);
+
+/**
+ * @brief Retrieves speed from GPS struct
+ * 
+ * @param gps 
+ * @return char* 
+ */
 char* GPS_get_speed(GPSData* gps);
+
+/**
+ * @brief Retrieves heading from GPS struct
+ * 
+ * @param gps 
+ * @return char* 
+ */
 char* GPS_get_heading(GPSData* gps);
+
+/**
+ * @brief Retrieves validity of GPS struct
+ * 
+ * @param gps 
+ * @return true
+ * @return false
+ * 
+ */
 bool GPS_is_valid(GPSData* gps);
 
 #endif // GPS_H

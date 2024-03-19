@@ -46,10 +46,12 @@ int main() {
             }
         }
 
+        // Pass received NMEA sentence to GPS parser
         GPS_parse_gprmc(&gps, nmea_received);
 
+        // If GPS data is valid, send it over software serial
         if (GPS_is_valid(&gps)) {
-            // Create GPS data string to send over software serial
+            // Create GPS summary data string
             sprintf(data, "Time: %s, Lat: %s, Lon: %s, Speed: %s, Heading: %s\n", 
                     GPS_get_time(&gps), GPS_get_lat(&gps), GPS_get_lon(&gps), 
                     GPS_get_speed(&gps), GPS_get_heading(&gps));

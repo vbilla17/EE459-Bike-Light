@@ -46,13 +46,11 @@ uint8_t uart_receive_byte() {
     return UDR0;
 }
 
-void uart_receive_string(char *data) {
+void uart_receive_string(char *data, uint8_t max_length) {
     // Receive each character in the string
-    for (uint8_t i = 0; i < 255; i++) {
+    for (uint8_t i = 0; i < max_length - 1; i++) {
         data[i] = uart_receive_byte();
-        if (data[i] == '\0') {
-            break;
-        }
+        if (data[i] == '\0') break;
     }
+    data[max_length - 1] = '\0'; // Ensure null termination
 }
-

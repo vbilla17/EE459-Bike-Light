@@ -1,6 +1,6 @@
 /**
  * @file uart.h
- * @brief Header file for interrupt-based UART library for ATmega328P processor.
+ * @brief Header file for UART library for ATmega328P processor.
  * @author Vishal Billa (vbilla@usc.edu)
  * @version 1.0
  * @date 2024-03-04
@@ -58,7 +58,7 @@ unsigned char uart_receive_byte(void);
  * 
  * @param data The string of data to be received.
  */
-void uart_receive_string(char *data);
+void uart_receive_string(char *data, uint8_t max_length);
 
 #endif // UART_H
 
