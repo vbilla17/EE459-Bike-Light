@@ -24,6 +24,14 @@
 // Define baud rate register value
 #define BAUD_REG ((F_CPU / (16UL * BAUD)) - 1)
 
+// Buffer size for received data
+#define RX_BUFFER_SIZE 128
+
+// Circular buffer for received data
+extern volatile char rx_buffer[RX_BUFFER_SIZE];
+extern volatile uint8_t rx_buffer_head;
+extern volatile uint8_t rx_buffer_tail;
+
 /**
  * @brief Initializes the UART communication.
  * 
@@ -49,16 +57,20 @@ void uart_transmit_string(const char *data);
 /**
  * @brief Receives a byte of data through UART.
  * 
- * @return The received byte of data.
+ * @return The byte of data received.
  */
-unsigned char uart_receive_byte(void);
+uint8_t uart_receive_byte(void);
 
 /**
- * @brief Reveives a string of data through UART.
+ * @brief Checks if data is available to be read from UART.
  * 
- * @param data The string of data to be received.
+ * @return The number of bytes available to be read.
  */
-void uart_receive_string(char *data, uint8_t max_length);
+uint8_t uart_available(void);
+
+/**
+ * @brief Flushes the UART receive buffer.
+ */
+void uart_flush(void);
 
 #endif // UART_H
-

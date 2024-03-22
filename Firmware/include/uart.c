@@ -9,6 +9,10 @@
 
 #include "uart.h"
 
+volatile char rx_buffer[RX_BUFFER_SIZE];
+volatile uint8_t rx_buffer_head = 0;
+volatile uint8_t rx_buffer_tail = 0;
+
 void uart_init() {
     // Set baud rate
     UBRR0H = (unsigned char)(BAUD_REG >> 8);
@@ -17,13 +21,15 @@ void uart_init() {
     // Enable receiver and transmitter
     UCSR0B = (1 << RXEN0) | (1 << TXEN0);
 
+    // Enable receive interrupt
+    UCSR0B |= (1 << RXCIE0);
+
     // Frame format is already set to 8 data bits, no parity, 1 stop bit
 
-    // Enable global interrupts
-    sei();
+    // Make sure global interrupts are enabled
 }
 
-void uart_transmit(uint8_t data) {
+void uart_transmit_byte(uint8_t data) {
     // Wait for empty transmit buffer
     while (!(UCSR0A & (1 << UDRE0)));
 
@@ -33,24 +39,37 @@ void uart_transmit(uint8_t data) {
 
 void uart_transmit_string(const char *data) {
     // Transmit each character in the string
-    for (uint8_t i = 0; data[i] != '\0'; i++) {
-        uart_transmit(data[i]);
+    while (*data) {
+        uart_transmit_byte(*data++);
     }
 }
 
 uint8_t uart_receive_byte() {
-    // Wait for data to be received
-    while (!(UCSR0A & (1 << RXC0)));
+    if (rx_buffer_head == rx_buffer_tail) {
+        return 0; // No data available
+    }
 
-    // Get and return received data from buffer
-    return UDR0;
+    // Get data from buffer
+    uint8_t data = rx_buffer[rx_buffer_tail++];
+    rx_buffer_tail %= RX_BUFFER_SIZE;
+
+    return data; // Return received data
 }
 
-void uart_receive_string(char *data, uint8_t max_length) {
-    // Receive each character in the string
-    for (uint8_t i = 0; i < max_length - 1; i++) {
-        data[i] = uart_receive_byte();
-        if (data[i] == '\0') break;
-    }
-    data[max_length - 1] = '\0'; // Ensure null termination
+uint8_t uart_available() {
+    // Return number of bytes available in buffer
+    return (RX_BUFFER_SIZE + rx_buffer_head - rx_buffer_tail) % RX_BUFFER_SIZE;
+}
+
+void uart_flush() {
+    // Reset buffer head and tail
+    rx_buffer_head = rx_buffer_tail = 0;
+}
+
+ISR(USART_RX_vect) {
+    // Add received data to buffer
+    rx_buffer[rx_buffer_head++] = UDR0;
+
+    // Wrap around buffer head
+    rx_buffer_head %= RX_BUFFER_SIZE;
 }
