@@ -1,5 +1,5 @@
 DEVICE     = atmega328p
-CLOCK      = 16000000
+CLOCK      = 7372800UL
 PROGRAMMER = -c usbtiny -P usb
 SRC_DIR    = src
 INC_DIR    = include

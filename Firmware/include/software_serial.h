@@ -15,11 +15,16 @@
 #include <util/delay.h>
 
 #define SS_BAUD 9600
-#define BIT_TIME (1000000L / SS_BAUD)
+#define BIT_TIME (1000000UL / SS_BAUD)
 
-#define SS_TX_PORT PORTB
-#define SS_TX_DDR DDRB
-#define SS_TX_PIN PB5
+// #define SS_TX_PORT PORTB
+// #define SS_TX_DDR DDRB
+// #define SS_TX_PIN PB5
+
+// USE PD2 for software serial
+#define SS_TX_PORT PORTD
+#define SS_TX_DDR DDRD
+#define SS_TX_PIN PD3
 
 /**
  * @brief Initializes software serial on the ATmega328P
