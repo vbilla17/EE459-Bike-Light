@@ -1,0 +1,20 @@
+Change Component Comment : Designator=C8 Old Comment=CL31B103KBCNNNC New Comment=10nF
+Change Component Designator: OldDesignator=S?_B1 NewDesignator=S1_B1
+Change Component Designator: OldDesignator=S?_B2 NewDesignator=S1_B2
+Change Component Designator: OldDesignator=S?_B3 NewDesignator=S1_B3
+Added Component: Designator=R27(R1206)
+Add component (AddParameter): Name = "Design Item ID"; Value = "ERJ-8ENF1002V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Made By"; Value = "Brennan Swanton"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reviewed By"; Value = "Carter Allen"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Resistors.SchLib"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "541-2247-1-ND"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=~Reset Pin=R27-1
+Added Pin To Net: NetName=+3V3 Pin=R27-2
+Added Member To Class: ClassName=U_CPU Member=Component R27 10k
+Added Member To Class: ClassName=U_IMU Member=Component R31 10k
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU

@@ -1,0 +1,5 @@
+Change Component Footprint: Designator=J5 Old Footprint=632723100011 New Footprint=632723100011
+Change Component Footprint: Designator=J1 Old Footprint=FP-SBH11-NBPC-D03-ST-BK-MFG New Footprint=FP-SBH11-NBPC-D03-ST-BK-MFG
+Change Component Designator: OldDesignator=R27 NewDesignator=Q6
+Change Component Designator: OldDesignator=R30 NewDesignator=Q7
+Change Component Designator: OldDesignator=R32 NewDesignator=Q8

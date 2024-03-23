@@ -1,0 +1,31 @@
+Removed Pin From Net: NetName=RX Pin=R20-1
+Removed Pin From Net: NetName=TX Pin=R21-1
+Removed Member From Class: ClassName=U_GPS Member=R21
+Change Component Comment : Designator=R20 Old Comment=470 New Comment=51
+Change Managed Component Library Link : Designator=R20 Old VaultGUID=681b8cee-9a99-453c-b94c-6db806ba1c67 New VaultGUID=681b8cee-9a99-453c-b94c-6db806ba1c67 Old ItemGUID=D88D6F7A-501F-40A0-AE55-70EBBEA6696C New ItemGUID=AB472739-6583-4999-80E6-598402E8111E Old RevisionGUID=ec4dd446-96d6-4c4b-92c2-d71780f4ede9 New RevisionGUID=e2f87c9d-2c83-4192-ac6d-84a4a301ff82
+Change component parameters: Designator = "R20" ("R20"); Footprint = "R1206"; UniqueID = "\MQXVKOSU\NHVEUOZY" ("\MQXVKOSU\NHVEUOZY")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "ERJ-8ENF51R0V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Made By"; Value = "Jamie Smith"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "Resistors.SchLib"; VariantName = "[No Variations]"
+Added Component: Designator=D8(LEDC1206)
+Add component (AddParameter): Name = "Design Item ID"; Value = "HSMS-C150"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Made By"; Value = "Brennan Swanton"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reviewed By"; Value = "Jamie Smith"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Diodes.SchLib"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=D8-C
+Added Pin To Net: NetName=FIX Pin=R20-1
+Added Pin To Net: NetName=RX Pin=U2-9
+Added Pin To Net: NetName=TX Pin=U2-10
+Added Pin To Net: NetName=NetD8_A Pin=D8-A
+Added Pin To Net: NetName=NetD8_A Pin=R20-2
+Added Net: Name=NetD8_A
+Added Member To Class: ClassName=U_GPS Member=Component D8 HSMS-C150
+Added Room: Name=B1
+Added Room: Name=B2
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_Connectors
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU
+Added Room: Name=U_LEDs

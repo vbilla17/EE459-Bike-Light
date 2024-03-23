@@ -1,0 +1,23 @@
+Added Component: Designator=H?(128MIL_MOUNTING_HOLE)
+Add component (AddParameter): Name = "Design Item ID"; Value = "ConductiveMountingHole128Mil"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Misc.SchLib"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R1206)
+Add component (AddParameter): Name = "Design Item ID"; Value = "ERJ-8ENF1003V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Made By"; Value = "Brennan Swanton"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reviewed By"; Value = "Carter Allen"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Resistors.SchLib"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=R?-2
+Added Pin To Net: NetName=NetH?_1 Pin=H?-1
+Added Pin To Net: NetName=NetH?_1 Pin=R?-1
+Added Net: Name=NetH?_1
+Added Member To Class: ClassName=U_Connectors Member=Component H? ConductiveMountingHole128Mil
+Added Member To Class: ClassName=U_Connectors Member=Component R? 100k
+Added Room: Name=B1
+Added Room: Name=B2
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_Connectors
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU
+Added Room: Name=U_LEDs

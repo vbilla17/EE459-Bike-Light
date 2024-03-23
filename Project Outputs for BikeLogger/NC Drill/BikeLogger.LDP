@@ -1,0 +1,3 @@
+Layer Pairs Export File for PCB: C:\Users\Public\Documents\Altium\Projects\BikeLogger\BikeLogger.PcbDoc
+LayersSetName=Top_Bot_Thru_Holes|DrillFile=bikelogger-roundholes.txt|DrillLayers=gtl,gp1,gp2,gbl
+LayersSetName=Top_Bot_Slot_Holes|DrillFile=bikelogger-slotholes.txt|DrillLayers=gtl,gp1,gp2,gbl

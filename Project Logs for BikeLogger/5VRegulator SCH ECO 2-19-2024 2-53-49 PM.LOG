@@ -1,0 +1,15 @@
+Update Managed Component C17 From CMP-054-000012-4[.1uF] To CMP-054-000012-4[0.1UF] in 5VRegulator.SchDoc
+Update Managed Component C18 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 5VRegulator.SchDoc
+Update Managed Component C19 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 5VRegulator.SchDoc
+Update Managed Component C20 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 5VRegulator.SchDoc
+Update Managed Component C21 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 5VRegulator.SchDoc
+Update Managed Component C22 From CMP-054-000012-4[.1uF] To CMP-054-000012-4[0.1UF] in 5VRegulator.SchDoc
+Update Managed Component C23 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 5VRegulator.SchDoc
+Update Managed Component C26 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 5VRegulator.SchDoc
+Update Managed Component L3 From CMP-030-000022-1[IHLP2020CZER4R7M11] To CMP-030-000022-1[IHLP2020CZER4R7M11] in 5VRegulator.SchDoc
+Update Managed Component R11 From CMP-024-000012-3[ERA-8AHD300V] To CMP-024-000012-3[ERA-8AHD300V] in 5VRegulator.SchDoc
+Update Managed Component R12 From CMP-024-000023-3[52.3k] To CMP-024-000023-3[ERA-8AEB5232V] in 5VRegulator.SchDoc
+Update Managed Component R13 From CMP-024-000034-3[10k] To CMP-024-000034-3[10k] in 5VRegulator.SchDoc
+Replace Part R16 CMP-2003-01839-2 in C:\Users\Public\Documents\Altium\Projects\BikeLogger\5VRegulator.SchDoc with CMP-2003-01839-2 from CRCW1206174KFKEA.SchLib
+Replace Part R22 CMP-2003-02123-2 in C:\Users\Public\Documents\Altium\Projects\BikeLogger\5VRegulator.SchDoc with CMP-2003-02123-2 from 36.5k.SchLib
+Update Managed Component U4 From CMP-034-000005-2[TPS56339DDCR] To CMP-034-000005-2[TPS56339DDCR] in 5VRegulator.SchDoc

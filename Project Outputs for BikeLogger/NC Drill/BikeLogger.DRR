@@ -1,0 +1,22 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: BikeLogger.PcbDoc   3/7/2024  9:26:59 AM
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Components_TopLayer to Traces_BottomLayer
+ASCII RoundHoles File : BikeLogger-RoundHoles.TXT
+ASCII SlotHoles File : BikeLogger-SlotHoles.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      15mil (0.381mm)                                           Round             135       PTH        25.89inch (657.55mm)
+T2      16mil (0.4mm)                                             Round             14        PTH        0.47inch (12.01mm)
+T3      24mil (0.6mm)                                             Slot              4         PTH        1.51inch (38.42mm)
+T4      39mil (1mm)                                               Round             12        PTH        3.16inch (80.31mm)
+T5      43mil (1.1mm)                                             Round             4         PTH        2.29inch (58.16mm)
+T6      47mil (1.194mm)                                           Round             16        PTH        2.10inch (53.29mm)
+T7      128mil (3.251mm)                                          Round             1         PTH        0.00inch (0.00mm)
+T8      47mil (1.194mm)                                           Round             1         NPTH       0.00inch (0.00mm)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              187
+
+Total Processing Time (hh:mm:ss) : 00:00:00

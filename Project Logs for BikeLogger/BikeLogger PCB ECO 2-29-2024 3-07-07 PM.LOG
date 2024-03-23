@@ -1,0 +1,26 @@
+Removed Pin From Net: NetName=~GPS_RST Pin=U2-2
+Removed Member From Class: ClassName=U_Connectors Member=DNP
+Change Component Comment : Designator=DNP Old Comment=ERJ-3EKF1001V New Comment=DNP
+Change Component Comment : Designator=DNP Old Comment=ERJ-3EKF1001V New Comment=DNP
+Change Component Designator: OldDesignator=DNP NewDesignator=R21
+Change Component Designator: OldDesignator=DNP NewDesignator=R33
+Added Component: Designator=R34(R0603)
+Add component (AddParameter): Name = "Design Item ID"; Value = "ERJ-3EKF1001V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Made By"; Value = "Brennan Swanton"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reviewed By"; Value = "Carter Allen"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Resistors.SchLib"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=~GPS_RST Pin=R34-1
+Added Pin To Net: NetName=NetR34_2 Pin=R34-2
+Added Pin To Net: NetName=NetR34_2 Pin=U2-2
+Added Net: Name=NetR34_2
+Added Member To Class: ClassName=U_Connectors Member=Component R33 DNP
+Added Member To Class: ClassName=U_GPS Member=Component R34 DNP
+Added Room: Name=B1
+Added Room: Name=B2
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_Connectors
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU
+Added Room: Name=U_LEDs

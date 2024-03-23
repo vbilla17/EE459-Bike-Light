@@ -1,0 +1,30 @@
+Added Component: Designator=Q6(DIO_RB558WMF_ROM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2024 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "RE1C002UNTCL"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=Q7(DIO_RB558WMF_ROM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2024 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "RE1C002UNTCL"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=Q8(DIO_RB558WMF_ROM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2024 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "RE1C002UNTCL"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=SCL Pin=Q6-D
+Added Pin To Net: NetName=+1V8 Pin=Q6-G
+Added Pin To Net: NetName=IMU_SCL Pin=Q6-S
+Added Pin To Net: NetName=IMU_INT Pin=Q7-D
+Added Pin To Net: NetName=+1V8 Pin=Q7-G
+Added Pin To Net: NetName=INT Pin=Q7-S
+Added Pin To Net: NetName=SDA Pin=Q8-D
+Added Pin To Net: NetName=+1V8 Pin=Q8-G
+Added Pin To Net: NetName=IMU_SDA Pin=Q8-S
+Added Member To Class: ClassName=U_IMU Member=Component Q6 RE1C002UNTCL
+Added Member To Class: ClassName=U_IMU Member=Component Q7 RE1C002UNTCL
+Added Member To Class: ClassName=U_IMU Member=Component Q8 RE1C002UNTCL

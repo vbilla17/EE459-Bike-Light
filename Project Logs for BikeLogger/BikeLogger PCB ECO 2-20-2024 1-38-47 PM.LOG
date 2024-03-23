@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=RX Pin=U1-30
+Removed Pin From Net: NetName=TX Pin=U1-31
+Added Pin To Net: NetName=TX Pin=U1-30
+Added Pin To Net: NetName=RX Pin=U1-31
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU

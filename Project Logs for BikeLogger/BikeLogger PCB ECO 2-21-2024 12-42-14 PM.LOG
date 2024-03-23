@@ -1,0 +1,33 @@
+Added Component: Designator=C33(C0603)
+Add component (AddParameter): Name = "Design Item ID"; Value = "ESD35C104K4T2A-24"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Made by"; Value = "Brennan Swanton"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reviewed by"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Capacitors.SchLib"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier SKU"; Value = "478-8009-1-ND"; VariantName = "[No Variations]"
+Added Component: Designator=R30(R1206)
+Add component (AddParameter): Name = "Design Item ID"; Value = "ERJ-8ENF1002V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Made By"; Value = "Brennan Swanton"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reviewed By"; Value = "Carter Allen"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Source"; Value = "Resistors.SchLib"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "541-2247-1-ND"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=C33-1
+Added Pin To Net: NetName=+3V3 Pin=R30-2
+Added Pin To Net: NetName=NetC33_2 Pin=C33-2
+Added Pin To Net: NetName=NetC33_2 Pin=U1-20
+Added Net: Name=NetC33_2
+Added Pin To Net: NetName=~GPS_RST Pin=R30-1
+Added Pin To Net: NetName=~GPS_RST Pin=U1-13
+Added Pin To Net: NetName=~GPS_RST Pin=U2-2
+Added Net: Name=~GPS_RST
+Added Member To Class: ClassName=U_CPU Member=Component C33 0.1UF
+Added Member To Class: ClassName=U_CPU Member=Component R30 10k
+Added Room: Name=B1
+Added Room: Name=B2
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_Connectors
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU
+Added Room: Name=U_LEDs

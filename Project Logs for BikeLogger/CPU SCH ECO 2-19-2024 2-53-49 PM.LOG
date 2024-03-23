@@ -1,0 +1,10 @@
+Update Managed Component C1 From CMP-054-000019-2[4.7uF] To CMP-054-000019-2[4.7uF] in CPU.SchDoc
+Update Managed Component C2 From CMP-054-000044-3[0.1µF] To CMP-054-000044-3[0.1UF] in CPU.SchDoc
+Update Managed Component C3 From CMP-054-000044-3[0.1µF] To CMP-054-000044-3[0.1UF] in CPU.SchDoc
+Update Managed Component C8 From CMP-054-000011-1[10nF] To CMP-054-000011-1[CL31B103KBCNNNC] in CPU.SchDoc
+Update Managed Component J1 From CMP-00595-33729071-1[SBH11-NBPC-D03-ST-BK] To CMP-00595-33729071-1[SBH11-NBPC-D03-ST-BK] in CPU.SchDoc
+Update Managed Component J1 From CMP-00595-33729071-1[SBH11-NBPC-D03-ST-BK] To CMP-00595-33729071-1[SBH11-NBPC-D03-ST-BK] in CPU.SchDoc
+Update Managed Component R6 From CMP-024-000034-3[10k] To CMP-024-000034-3[10k] in CPU.SchDoc
+Update Managed Component R7 From CMP-024-000034-3[10k] To CMP-024-000034-3[10k] in CPU.SchDoc
+Update Managed Component U1 From CMP-2000-07439-1[ATMEGA328PB-AU] To CMP-2000-07439-1[ATMEGA328PB-AU] in CPU.SchDoc
+Replace Part Y1 CB3LV-3C-7M372800 in C:\Users\Public\Documents\Altium\Projects\BikeLogger\CPU.SchDoc with CB3LV-3C-7M372800 from CB3LV-3C-7M372800.IntLib

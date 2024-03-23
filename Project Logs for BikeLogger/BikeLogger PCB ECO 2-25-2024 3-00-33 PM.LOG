@@ -1,0 +1,41 @@
+Removed Pin From Net: NetName=BIKE_EN Pin=Q4-1
+Removed Pin From Net: NetName=GND Pin=Q4-2
+Removed Pin From Net: NetName=Bike_RTN Pin=Q4-3
+Removed Pin From Net: NetName=LCD_EN Pin=Q5-1
+Removed Pin From Net: NetName=GND Pin=Q5-2
+Removed Pin From Net: NetName=LCD_RTN Pin=Q5-3
+Change Component Footprint: Designator=Q4 Old Footprint=2N7002 New Footprint=TSMT6
+Change Component Footprint: Designator=Q5 Old Footprint=2N7002 New Footprint=TSMT6
+Change Component Comment : Designator=Q4 Old Comment=2N7002 New Comment=RVQ040N05
+Change Component Comment : Designator=Q5 Old Comment=2N7002 New Comment=RVQ040N05
+Change Managed Component Library Link : Designator=Q4 Old VaultGUID=681b8cee-9a99-453c-b94c-6db806ba1c67 New VaultGUID=681b8cee-9a99-453c-b94c-6db806ba1c67 Old ItemGUID=B52E4C54-6418-4BEF-91D9-0B06FED4D092 New ItemGUID=818A6C3F-0028-40AA-9E7D-F6A8CA1D14CC Old RevisionGUID=04B4CB5A-1538-4BB9-B8CC-CDE6E6B321A2 New RevisionGUID=b2e56115-4963-466f-b335-39e08361cea0
+Change Managed Component Library Link : Designator=Q5 Old VaultGUID=681b8cee-9a99-453c-b94c-6db806ba1c67 New VaultGUID=681b8cee-9a99-453c-b94c-6db806ba1c67 Old ItemGUID=B52E4C54-6418-4BEF-91D9-0B06FED4D092 New ItemGUID=818A6C3F-0028-40AA-9E7D-F6A8CA1D14CC Old RevisionGUID=04B4CB5A-1538-4BB9-B8CC-CDE6E6B321A2 New RevisionGUID=b2e56115-4963-466f-b335-39e08361cea0
+Change component parameters: Designator = "Q4" ("Q4"); Footprint = "2N7002"; UniqueID = "\KNOURKTF\FDKPVRHD" ("\KNOURKTF\FDKPVRHD")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "RVQ040N05"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Made by"; Value = "Jamie Smith"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "Transistors.SchLib"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Q5" ("Q5"); Footprint = "2N7002"; UniqueID = "\KNOURKTF\LMSEODVZ" ("\KNOURKTF\LMSEODVZ")
+Change component parameters (AddParameter): Name = "Design Item ID"; Value = "RVQ040N05"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Made by"; Value = "Jamie Smith"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Source"; Value = "Transistors.SchLib"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=Bike_RTN Pin=Q4-1
+Added Pin To Net: NetName=Bike_RTN Pin=Q4-2
+Added Pin To Net: NetName=BIKE_EN Pin=Q4-3
+Added Pin To Net: NetName=GND Pin=Q4-4
+Added Pin To Net: NetName=Bike_RTN Pin=Q4-5
+Added Pin To Net: NetName=Bike_RTN Pin=Q4-6
+Added Pin To Net: NetName=LCD_RTN Pin=Q5-1
+Added Pin To Net: NetName=LCD_RTN Pin=Q5-2
+Added Pin To Net: NetName=LCD_EN Pin=Q5-3
+Added Pin To Net: NetName=GND Pin=Q5-4
+Added Pin To Net: NetName=LCD_RTN Pin=Q5-5
+Added Pin To Net: NetName=LCD_RTN Pin=Q5-6
+Added Room: Name=B1
+Added Room: Name=B2
+Added Room: Name=U_3v3Regulator
+Added Room: Name=U_5VRegulator
+Added Room: Name=U_Connectors
+Added Room: Name=U_CPU
+Added Room: Name=U_GPS
+Added Room: Name=U_IMU
+Added Room: Name=U_LEDs

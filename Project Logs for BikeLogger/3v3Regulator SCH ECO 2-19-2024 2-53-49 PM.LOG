@@ -1,0 +1,15 @@
+Update Managed Component C9 From CMP-054-000012-4[.1uF] To CMP-054-000012-4[0.1UF] in 3v3Regulator.SchDoc
+Update Managed Component C10 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 3v3Regulator.SchDoc
+Update Managed Component C11 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 3v3Regulator.SchDoc
+Update Managed Component C12 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 3v3Regulator.SchDoc
+Update Managed Component C13 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 3v3Regulator.SchDoc
+Update Managed Component C14 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 3v3Regulator.SchDoc
+Update Managed Component C15 From CMP-054-000014-3[10uF] To CMP-054-000014-3[10UF] in 3v3Regulator.SchDoc
+Update Managed Component C16 From CMP-054-000012-4[.1uF] To CMP-054-000012-4[0.1UF] in 3v3Regulator.SchDoc
+Update Managed Component L1 From CMP-030-000022-1[IHLP2020CZER4R7M11] To CMP-030-000022-1[IHLP2020CZER4R7M11] in 3v3Regulator.SchDoc
+Update Managed Component R8 From CMP-024-000012-3[ERA-8AHD300V] To CMP-024-000012-3[ERA-8AHD300V] in 3v3Regulator.SchDoc
+Update Managed Component R9 From CMP-024-000100-1[30.9K] To CMP-024-000100-1[CRCW060330K9FKEA] in 3v3Regulator.SchDoc
+Replace Part R10 CMP-2003-01839-2 in C:\Users\Public\Documents\Altium\Projects\BikeLogger\3v3Regulator.SchDoc with CMP-2003-01839-2 from CRCW1206174KFKEA.SchLib
+Update Managed Component R14 From CMP-024-000034-3[10k] To CMP-024-000034-3[10k] in 3v3Regulator.SchDoc
+Replace Part R15 CMP-2003-02123-2 in C:\Users\Public\Documents\Altium\Projects\BikeLogger\3v3Regulator.SchDoc with CMP-2003-02123-2 from 36.5k.SchLib
+Update Managed Component U3 From CMP-034-000005-2[TPS56339DDCR] To CMP-034-000005-2[TPS56339DDCR] in 3v3Regulator.SchDoc
