@@ -14,13 +14,19 @@
 #include <stdbool.h>
 #include <avr/interrupt.h>
 
-// Define output pin info
-#define TX_PIN PD3
-#define TX_PORT PORTD
-#define TX_DDR DDRD
+// Uncomment for 328P Processor
+// #define TX_PIN PD3
+// #define TX_PORT PORTD
+// #define TX_DDR DDRD
+
+// Uncomment for 328PB Processor
+#define TX_PIN PE0
+#define TX_PORT PORTE
+#define TX_DDR DDRE
+
 
 // Define max length of transmit buffer
-#define TX_BUFFER_SIZE 128
+#define TX_BUFFER_SIZE 64
 
 // Circular buffer for data to be transmitted
 extern volatile char tx_buffer[TX_BUFFER_SIZE];

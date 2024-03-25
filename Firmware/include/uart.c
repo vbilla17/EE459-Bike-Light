@@ -66,7 +66,7 @@ void uart_flush() {
     rx_buffer_head = rx_buffer_tail = 0;
 }
 
-ISR(USART_RX_vect) {
+ISR(USART1_RX_vect) {
     // Add received data to buffer
     rx_buffer[rx_buffer_head++] = UDR0;
 

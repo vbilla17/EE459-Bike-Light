@@ -1,5 +1,5 @@
-DEVICE     = atmega328p
-# DEVICE     = atmega328pb
+# DEVICE     = atmega328p # Uncomment for ATmega328P
+DEVICE     = atmega328pb # Uncomment for ATmega328PB
 CLOCK      = 7372800UL
 PROGRAMMER = -c usbtiny -P usb
 SRC_DIR    = src
