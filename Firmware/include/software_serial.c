@@ -18,6 +18,9 @@ void software_serial_init() {
     tx_port = &SS_TX_PORT;  // Set the transmit pin port
     tx_mask = (1 << SS_TX_PIN);  // Set the transmit pin mask
     *tx_ddr |= tx_mask;     // Set the transmit pin as output
+
+    // Set the transmit pin high
+    *tx_port |= tx_mask;
 }
 
 void ss_transmit_byte(unsigned char data) {
