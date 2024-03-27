@@ -22,9 +22,9 @@
 // #define SS_TX_PIN PB5
 
 // USE PD2 for software serial
-#define SS_TX_PORT PORTD
-#define SS_TX_DDR DDRD
-#define SS_TX_PIN PD3
+#define SS_TX_PORT PORTE
+#define SS_TX_DDR DDRE
+#define SS_TX_PIN PE0
 
 /**
  * @brief Initializes software serial on the ATmega328P
