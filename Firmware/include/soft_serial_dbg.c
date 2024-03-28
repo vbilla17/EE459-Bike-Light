@@ -67,6 +67,10 @@ bool dbg_send_string(const char *str) {
             break;
         }
     }
+    // Send null character to indicate end of string
+    if (success) {
+        dbg_send_char('\0');
+    }
     return success;
 }
 
