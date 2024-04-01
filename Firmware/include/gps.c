@@ -23,64 +23,15 @@ void GPS_init(GPSData* gps) {
 }
 
 void GPS_parse_gprmc(GPSData* GPS, char* sentence) {
-    // Check if the sentence is a GPRMC sentence
-    if (strncmp(sentence, "$GPRMC", 6) == 0) {
-        // Split the sentence into tokens
-        char* token = strtok(sentence, ",");
-        uint8_t i = 0;
-        while (token != NULL) {
-            switch (i) {
-                case 0: // Sentence type
-                    // Don't care about sentence type
-                    break;
-                case 1: // Time
-                    strncpy(GPS->time, token, MAX_TIME_LEN);
-                    break;
-                case 2: // Validity
-                    if (token[0] == 'A') {
-                        GPS->valid = true;
-                    } else {
-                        GPS->valid = false;
-                    }
-                    break;
-                case 3: // Latitude
-                    strncpy(GPS->lat, token, MAX_LAT_LEN);
-                    break;
-                case 4: // Latitude direction
-                    strncpy(GPS->lat_dir, token, MAX_LAT_DIR_LEN);
-                    break;
-                case 5: // Longitude
-                    strncpy(GPS->lon, token, MAX_LON_LEN);
-                    break;
-                case 6: // Longitude direction
-                    strncpy(GPS->lon_dir, token, MAX_LON_DIR_LEN);
-                    break;
-                case 7: // Speed
-                    strncpy(GPS->speed, token, MAX_SPEED_LEN);
-                    break;
-                case 8: // Heading
-                    strncpy(GPS->heading, token, MAX_HEADING_LEN);
-                    break;
-                case 9: // Date
-                    // Don't care about date
-                    break;
-                case 10: // Magnetic variation
-                    // Don't care about magnetic variation
-                    break;
-                case 11: // Magnetic variation direction
-                    // Don't care about magnetic variation direction
-                    break;
-                case 12: // Mode
-                    // Don't care about mode
-                    break;
-                default:
-                    break;
-            }
-            token = strtok(NULL, ",");
-            i++;
-        }
-        // Set GPS data as valid
+    char mode_indicator = 0;
+    char pos_status = 0;
+    int scan_result = sscanf(sentence, "$GPRMC,%6s,%c,%9s,%c,%10s,%c,%7s,%6s,%*s,%*s,%*s,%c,%*s",
+                             GPS->time, &pos_status, GPS->lat, GPS->lat_dir, GPS->lon, GPS->lon_dir,
+                             GPS->speed, GPS->heading, &mode_indicator);
+    if ((scan_result == 9) && (pos_status == 'A') && (mode_indicator != 'N')) {
         GPS->valid = true;
+    } else {
+        GPS->valid = false;
     }
 }
 

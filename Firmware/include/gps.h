@@ -22,7 +22,7 @@
 
 // Define max length of NMEA fields
 #define MAX_TIME_LEN 6 // hhmmss
-#define MAX_LAT_LEN 19 // ddmm.mmmm
+#define MAX_LAT_LEN 9 // ddmm.mmmm
 #define MAX_LAT_DIR_LEN 1 // D
 #define MAX_LON_LEN 10 // dddmm.mmmm
 #define MAX_LON_DIR_LEN 1 // D
