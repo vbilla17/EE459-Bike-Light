@@ -112,7 +112,4 @@ ISR(TIMER1_COMPA_vect) {
             bit_pos = 0;
         }
     }
-
-    // To test baud rate, toggle tx pin
-    // TX_PORT ^= TX_MASK;
 }

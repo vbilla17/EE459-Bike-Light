@@ -26,7 +26,7 @@
 
 
 // Define max length of transmit buffer
-#define TX_BUFFER_SIZE 64
+#define TX_BUFFER_SIZE 258
 
 // Circular buffer for data to be transmitted
 extern volatile char tx_buffer[TX_BUFFER_SIZE];

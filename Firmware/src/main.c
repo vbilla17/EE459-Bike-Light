@@ -7,90 +7,71 @@
  * 
  */
 
-// #include "uart.h"
-// #include "software_serial.h"
+#include "uart.h"
 #include "soft_serial_dbg.h"
-// #include "gps.h"
+#include "gps.h"
 
 #include <stdio.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
 
 int main() {
 
     // Initialize UART communication
-    // uart_init();
+    uart_init();
 
     // Initialize software serial communication
-    // software_serial_init();
     dbg_init();
 
     // Create GPSData struct and initialize it
-    // GPSData gps;
-    // GPS_init(&gps);
+    GPSData gps;
+    GPS_init(&gps);
 
     // Create string to hold data to send over software serial
-    // char data[100];
+    char data[100];
 
-    // Create counter for life status over software serial
-    uint64_t counter = 0;
+    // Create string to hold received NMEA sentence
+    char nmea_received[85];
 
     // Turn on global interrupts
     sei();
 
     // Main loop
     while (1) {
-        // // String to hold received NMEA sentence
-        // char nmea_received[85];
+        // Check if there is data in the UART receive buffer
+        if (uart_available() > 0) {
+            // Read data from UART
+            char c = uart_receive_byte();
 
-        // // Receive NMEA sentence from GPS module
-        // if (uart_receive_byte() == '$') {
-        //     // Receive first character
-        //     char c;
-        //     c = uart_receive_byte();
-        //     // Receive rest of the sentence
-        //     while (c != '\n') {
-        //         // Add character to string and receive next character
-        //         nmea_received[strlen(nmea_received)] = c;
-        //         c = uart_receive_byte();
-        //     }
-        // }
+            // Check if the character is the start of a NMEA sentence
+            if (c == '$') {
+                // Reset the received NMEA sentence
+                memset(nmea_received, 0, sizeof(nmea_received));
+            }
 
-        // // ss_transmit_string(nmea_received);
-        // dbg_send_string(nmea_received);
+            // Add the character to the received NMEA sentence
+            strncat(nmea_received, &c, 1);
 
-        // // Pass received NMEA sentence to GPS parser
-        // GPS_parse_gprmc(&gps, nmea_received);
+            // Check if the NMEA sentence is complete
+            if (c == '\n') {
+                // Parse the NMEA sentence
+                GPS_parse_gprmc(&gps, nmea_received);
 
-        // // If GPS data is valid, send it over software serial
-        // if (GPS_is_valid(&gps)) {
-        //     // Create GPS summary data string
-        //     sprintf(data, "Time: %s, Lat: %s, Lon: %s, Speed: %s, Heading: %s\n", 
-        //             GPS_get_time(&gps), GPS_get_lat(&gps), GPS_get_lon(&gps), 
-        //             GPS_get_speed(&gps), GPS_get_heading(&gps));
+                // Check if the GPS data is valid
+                if (GPS_is_valid(&gps)) {
+                    // Create string to hold GPS data
+                    sprintf(data, "Time: %s, Lat: %s %s, Lon: %s %s, Speed: %s, Heading: %s\n", gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir, gps.speed, gps.heading);
 
-        //     // Send GPS data over software serial
-        //     // ss_transmit_string(data);
-        //     dbg_send_string(data);
+                    // Send GPS data over software serial
+                    dbg_send_string(data);
 
-        //     // Set GPS data to invalid
-        //     GPS_invalidate(&gps);
-        // } else {
-        //     // ss_transmit_string("No GPS data available\n");
-        //     dbg_send_string("No GPS data available\n");
-        // }
-
-        // Send life status over software serial
-        if (counter == 1000) {
-            // ss_transmit_string("Hello from software serial!\n");
-            dbg_send_char('H');
-            // dbg_send_string("Hello from software debug library!\n");
-            // println("I'm alive!\n");
-            counter = 0;
+                    // Invalidate GPS data
+                    GPS_invalidate(&gps);
+                }
+                else {
+                    // Send invalid GPS data over software serial
+                    dbg_send_string("Invalid GPS data\n");
+                }
+            }
         }
-
-        // Increment counter
-        counter++;
     }
 
     return 0;

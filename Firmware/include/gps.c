@@ -79,6 +79,8 @@ void GPS_parse_gprmc(GPSData* GPS, char* sentence) {
             token = strtok(NULL, ",");
             i++;
         }
+        // Set GPS data as valid
+        GPS->valid = true;
     }
 }
 
