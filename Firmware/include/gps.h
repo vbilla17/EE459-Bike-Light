@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 // Define max length of NMEA fields
 #define MAX_TIME_LEN 6 // hhmmss
