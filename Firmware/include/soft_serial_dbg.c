@@ -1,115 +1,108 @@
 /**
  * @file soft_serial_dbg.c
+ *
  * @author Vishal Billa (vbilla@usc.edu)
- * @brief 
- * @version 1.0
  * @date 2024-03-23
- * 
+ *
+ * @brief Implementation file for software serial debug library.
+ *
+ * @copyright Copyright (c) 2024
  */
 
 #include "soft_serial_dbg.h"
 
-// Define pin mask for the transmit pin
-#define TX_MASK (1 << TX_PIN)
+/* Macro definitions */
+#define TX_MASK (1 << TX_PIN) // Define pin mask for the transmit pin.
 
-// Initialize tx buffer
-volatile char tx_buffer[TX_BUFFER_SIZE];
-volatile uint8_t tx_head = 0;
-volatile uint8_t tx_tail = 0;
+/* Global variables */
+volatile char tx_buffer[TX_BUFFER_SIZE]; // Transmit buffer.
+volatile uint8_t tx_head = 0;            // Head index for TX buffer.
+volatile uint8_t tx_tail = 0;            // Tail index for TX buffer.
+static volatile bool transmitting = false; // Flag to indicate if transmission is in progress.
 
-// Bool to check if transmission is in progress
-static volatile bool transmitting = false;
+/* Local variables */
+static volatile uint8_t tx_byte = 0; // The current byte being transmitted.
+static volatile uint8_t bit_pos = 0; // Position of the bit being transmitted.
 
-// Variables to store the current byte being transmitted
-static volatile uint8_t tx_byte = 0;
-static volatile uint8_t bit_pos = 0;
-
+/**
+ * Initializes the software serial debug.
+ */
 void dbg_init() {
-    // Set the transmit pin as output
-    TX_DDR |= TX_MASK;
+    TX_DDR |= TX_MASK; // Set the transmit pin as output.
+    TX_PORT |= TX_MASK; // Set the transmit pin high.
 
-    // Set the transmit pin high
-    TX_PORT |= TX_MASK;
-
-    // Configure timer for software serial
-    TCCR1B |= (1 << WGM12); // CTC mode
-    TIMSK1 |= (1 << OCIE1A); // Enable CTC interrupt
-    OCR1A = 767; // 9600 baud with 7.3728 MHz clock
-    TCCR1B |= (1 << CS10);  // No prescaler
+    // Configure timer for software serial.
+    TCCR1B |= (1 << WGM12); // Set timer to CTC mode.
+    TIMSK1 |= (1 << OCIE1A); // Enable CTC interrupt.
+    OCR1A = 767; // Set the compare match value for 9600 baud with a 7.3728 MHz clock.
+    TCCR1B |= (1 << CS10); // Start the timer with no prescaler.
 }
 
+/**
+ * Sends a character over software serial.
+ * @param c The character to send.
+ * @return true if character was queued successfully, false if buffer is full.
+ */
 bool dbg_send_char(char c) {
-    // Next idx is where the head will point to after this write
-    uint8_t next = (tx_head + 1) % TX_BUFFER_SIZE;
-    // Make sure buffer is not full
-    if (next != tx_tail) {
-        // Write data to head of buffer and update head
-        tx_buffer[tx_head] = c;
-        tx_head = next;
-        // Start transmitting if not already transmitting
-        if (!transmitting) {
+    uint8_t next = (tx_head + 1) % TX_BUFFER_SIZE; // Calculate next head index.
+    
+    if (next != tx_tail) { // Check if buffer is not full.
+        tx_buffer[tx_head] = c; // Place character in buffer.
+        tx_head = next; // Update head index.
+        if (!transmitting) { // Start transmission if not already started.
             transmitting = true;
         }
         return true;
     } else {
-        // Buffer is full
-        return false;
+        return false; // Buffer is full.
     }
 }
 
+/**
+ * Sends a string over software serial.
+ * @param str Pointer to the string to be sent.
+ * @return true if entire string was queued successfully, false otherwise.
+ */
 bool dbg_send_string(const char *str) {
     bool success = true;
-    // Send each character in the string
-    while (*str) {
-        // If a character fails to send, break and return false
+    while (*str) { // Send each character in the string.
         if (!dbg_send_char(*str++)) {
-            success = false;
+            success = false; // Failed to send a character.
             break;
         }
     }
-    // Send null character to indicate end of string
     if (success) {
-        dbg_send_char('\0');
+        dbg_send_char('\0'); // Optionally send null character to indicate end of string.
     }
     return success;
 }
 
+/**
+ * Interrupt service routine for timer compare match.
+ * Handles the transmission of serial data bit by bit.
+ */
 ISR(TIMER1_COMPA_vect) {
-    // If transmitting, send the next bit
     if (transmitting) {
-        // If bit position is 0, that means we're starting a new byte
-        if (bit_pos == 0) {
-            // If there is data in the buffer, get the next byte
-            if (tx_head != tx_tail) {
-                // Get next byte from buffer
-                tx_byte = tx_buffer[tx_tail];
-                // Move tail to next byte
-                tx_tail = (tx_tail + 1) % TX_BUFFER_SIZE;
-                // Pull TX pin low to start transmission
-                TX_PORT &= ~TX_MASK;
-                // Increment bit position
-                bit_pos++;
+        if (bit_pos == 0) { // If starting a new byte.
+            if (tx_head != tx_tail) { // If there's data in the buffer.
+                tx_byte = tx_buffer[tx_tail]; // Fetch the next byte.
+                tx_tail = (tx_tail + 1) % TX_BUFFER_SIZE; // Update tail index.
+                TX_PORT &= ~TX_MASK; // Start bit (pull TX pin low).
+                bit_pos++; // Move to next bit position.
             } else {
-                // Buffer is empty, stop transmitting
-                transmitting = false;
+                transmitting = false; // No more data to transmit.
             }
-        // If bit position is less than 9, send data bits
-        } else if (bit_pos <= 8) {
-            // Send data bits
-            // If LSB is 1, pull TX pin high
+        } else if (bit_pos <= 8) { // Transmitting data bits.
             if (tx_byte & 1) {
-                TX_PORT |= TX_MASK;
-            } else { // If LSB is 0, pull TX pin low
-                TX_PORT &= ~TX_MASK;
+                TX_PORT |= TX_MASK; // Send 1 (pull TX pin high).
+            } else {
+                TX_PORT &= ~TX_MASK; // Send 0 (pull TX pin low).
             }
-            // Shift data byte right and increment bit position
-            tx_byte >>= 1;
-            bit_pos++;
+            tx_byte >>= 1; // Prepare next bit for transmission.
+            bit_pos++; // Move to next bit position.
         } else {
-            // Pull TX pin high to stop transmission
-            TX_PORT |= TX_MASK;
-            // Reset bit position
-            bit_pos = 0;
+            TX_PORT |= TX_MASK; // Stop bit (pull TX pin high).
+            bit_pos = 0; // Reset for next byte.
         }
     }
 }
