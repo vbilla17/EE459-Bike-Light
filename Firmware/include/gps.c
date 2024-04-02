@@ -38,39 +38,3 @@ void GPS_parse_gprmc(GPSData* GPS, char* sentence) {
 void GPS_invalidate(GPSData* gps) {
     gps->valid = false;
 }
-
-char* GPS_get_time(GPSData* gps) {
-    return gps->time;
-}
-
-char* GPS_get_lat(GPSData* gps) {
-    // Combine latitude and direction
-    static char lat[MAX_LAT_LEN + MAX_LAT_DIR_LEN + 1];
-    strcpy(lat, gps->lat);
-    strcat(lat, gps->lat_dir);
-    return lat;
-}
-
-char* GPS_get_lon(GPSData* gps) {
-    // Combine longitude and direction
-    static char lon[MAX_LON_LEN + MAX_LON_DIR_LEN + 1];
-    strcpy(lon, gps->lon);
-    strcat(lon, gps->lon_dir);
-    return lon;
-}
-
-char* GPS_get_speed(GPSData* gps) {
-    return gps->speed;
-}
-
-char* GPS_get_heading(GPSData* gps) {
-    return gps->heading;
-}
-
-bool GPS_is_valid(GPSData* gps) {
-    return gps->valid;
-}
-
-
-
-
