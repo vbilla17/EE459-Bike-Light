@@ -1,22 +1,22 @@
 /**
  * @file uart.c
  * @author Vishal Billa (vbilla@usc.edu)
- * @brief 
- * @version 1.0
+ * @brief Implementation file for UART communication library
  * @date 2024-03-04
  * 
  */
 
 #include "uart.h"
 
-volatile char rx_buffer[RX_BUFFER_SIZE];
+// Initialize receive buffer and head and tail pointers
+volatile uint8_t rx_buffer[RX_BUFFER_SIZE];
 volatile uint8_t rx_buffer_head = 0;
 volatile uint8_t rx_buffer_tail = 0;
 
 void uart_init() {
-    // Set baud rate
-    UBRR0H = (unsigned char)(BAUD_REG >> 8);
-    UBRR0L = (unsigned char)BAUD_REG;
+    // Set baud rate based on the calculated value
+    UBRR0H = (uint8_t)(BAUD_REG >> 8);
+    UBRR0L = (uint8_t)BAUD_REG;
 
     // Enable receiver and transmitter
     UCSR0B = (1 << RXEN0) | (1 << TXEN0);
@@ -26,7 +26,7 @@ void uart_init() {
 
     // Frame format is already set to 8 data bits, no parity, 1 stop bit
 
-    // Make sure global interrupts are enabled
+    // Make sure global interrupts are enabled in the main program
 }
 
 void uart_transmit_byte(uint8_t data) {
@@ -37,7 +37,7 @@ void uart_transmit_byte(uint8_t data) {
     UDR0 = data;
 }
 
-void uart_transmit_string(const char *data) {
+void uart_transmit_string(const uint8_t *data) {
     // Transmit each character in the string
     while (*data) {
         uart_transmit_byte(*data++);
@@ -45,31 +45,37 @@ void uart_transmit_string(const char *data) {
 }
 
 uint8_t uart_receive_byte() {
-    if (rx_buffer_head == rx_buffer_tail) {
-        return 0; // No data available
+    uint8_t data = 0;
+    // Check if there is data in the receive buffer
+    if (rx_buffer_head != rx_buffer_tail) {
+        // Read a single byte from the receive buffer and increment the tail pointer
+        data = rx_buffer[rx_buffer_tail++];
+        rx_buffer_tail %= RX_BUFFER_SIZE;
     }
-
-    // Get data from buffer
-    uint8_t data = rx_buffer[rx_buffer_tail++];
-    rx_buffer_tail %= RX_BUFFER_SIZE;
-
-    return data; // Return received data
+    return data;
 }
 
 uint8_t uart_available() {
-    // Return number of bytes available in buffer
-    return (RX_BUFFER_SIZE + rx_buffer_head - rx_buffer_tail) % RX_BUFFER_SIZE;
+    return (uint8_t)((RX_BUFFER_SIZE + rx_buffer_head - rx_buffer_tail) % RX_BUFFER_SIZE);
 }
 
 void uart_flush() {
-    // Reset buffer head and tail
-    rx_buffer_head = rx_buffer_tail = 0;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        rx_buffer_head = rx_buffer_tail = 0;
+    }
 }
 
 ISR(USART0_RX_vect) {
-    // Add received data to buffer
-    rx_buffer[rx_buffer_head++] = UDR0;
+    // Read the received data
+    uint8_t data = UDR0;
+    // Calculate the next head pointer
+    unsigned int next_head = (rx_buffer_head + 1) % RX_BUFFER_SIZE;
 
-    // Wrap around buffer head
-    rx_buffer_head %= RX_BUFFER_SIZE;
+    // Check for overflow
+    if (next_head != rx_buffer_tail) {
+        rx_buffer[rx_buffer_head] = data;
+        rx_buffer_head = next_head;
+    } else {
+        // Buffer overflow, ignore data
+    }
 }

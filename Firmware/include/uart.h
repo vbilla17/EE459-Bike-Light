@@ -1,13 +1,14 @@
 /**
  * @file uart.h
- * @brief Header file for UART library for ATmega328P processor.
  * @author Vishal Billa (vbilla@usc.edu)
- * @version 1.0
+ * @brief Header file for buffered UART communication.
  * @date 2024-03-04
- * 
- * @details This library provides functions to initialize and use UART communication
- *          on the ATmega328P processor.
- * 
+ *
+ * @details This library provides functionality for UART TX and buffered RX. Designed for
+ *          use with the ATmega328pb microcontroller on USART0. The RX buffer size can be
+ *          adjusted by changing the RX_BUFFER_SIZE macro. F_CPU must be defined in the
+ *          Makefile or in the source code before using this library.
+ *
  */
 
 #ifndef UART_H
@@ -15,28 +16,26 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
-// Define baud rate
+// Set the baud rate
 #ifndef BAUD
 #define BAUD 9600
 #endif
 
-// Define baud rate register value
+// Calculate the baud rate register value
 #define BAUD_REG ((F_CPU / (16UL * BAUD)) - 1)
 
-// Buffer size for received data
+// Set the receive buffer size
 #define RX_BUFFER_SIZE 128
 
-// Circular buffer for received data
-extern volatile char rx_buffer[RX_BUFFER_SIZE];
+// Declare the receive buffer and head and tail pointers
+extern volatile uint8_t rx_buffer[RX_BUFFER_SIZE];
 extern volatile uint8_t rx_buffer_head;
 extern volatile uint8_t rx_buffer_tail;
 
 /**
  * @brief Initializes the UART communication.
- * 
- * This function initializes the UART communication by setting the baud rate and enabling
- * the necessary UART registers.
  */
 void uart_init(void);
 
@@ -45,14 +44,14 @@ void uart_init(void);
  * 
  * @param data The byte of data to be transmitted.
  */
-void uart_transmit_byte(unsigned char data);
+void uart_transmit_byte(uint8_t data);
 
 /**
  * @brief Transmit a string of data through UART.
  * 
  * @param data The string of data to be transmitted.
  */
-void uart_transmit_string(const char *data);
+void uart_transmit_string(const uint8_t *data);
 
 /**
  * @brief Receives a byte of data through UART.
