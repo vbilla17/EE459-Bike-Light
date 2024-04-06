@@ -1,17 +1,32 @@
 /**
  * @file main.c
  * @author Vishal Billa (vbilla@usc.edu)
- * @brief 
- * @version 1.0
+ * @brief Main loop for the project
  * @date 2024-03-04
- * 
+ *
  */
 
 #include "uart.h"
 #include "soft_serial_dbg.h"
 #include "gps.h"
 
+#include <util/delay.h>
+
+#define MAX_NMEA_LENGTH 128
+
 int main() {
+    // Create GPSData struct and initialize it
+    GPSData gps;
+    GPS_init(&gps);
+
+    // Create string to hold received NMEA sentence
+    char nmea_received[MAX_NMEA_LENGTH];
+
+    // Index to keep track of received NMEA sentence
+    uint8_t nmea_index = 0;
+
+    // Flag to indicate if we are done receiving a sentence
+    bool sentence_complete = false;
 
     // Initialize UART communication
     uart_init();
@@ -19,76 +34,56 @@ int main() {
     // Initialize software serial communication
     dbg_init();
 
-    // Create GPSData struct and initialize it
-    GPSData gps;
-    GPS_init(&gps);
-
-    // Create string to hold data to send over software serial
-    char data[100];
-    memset(data, 0, sizeof(data));
-
-    // Create string to hold received NMEA sentence
-    char nmea_received[85];
-    memset(nmea_received, 0, sizeof(nmea_received));
-
-    // Index to keep track of received NMEA sentence
-    uint8_t nmea_index = 0;
-
-    // Flag to indicate if we are receiving a GPRMC sentence
-    bool gprmc_sentence = false;
-
-    // Turn on global interrupts
+    // Enable global interrupts
     sei();
 
     // Main loop
     while (1) {
-        // Check if there is data in the UART receive buffer
+        // If there is data in the receive buffer
         if (uart_available() > 0) {
-            // Read data from UART
+            // Read a single byte (character) from the receive buffer
             char c = uart_receive_byte();
 
-            // Check if the character is the start of a NMEA sentence
-            if (c == '$') {
-                // Reset the received NMEA sentence
-                memset(nmea_received, 0, sizeof(nmea_received));
+            // Check if the character is the start of a new sentence
+            if ((c == '$') && (nmea_index == 0)) {
+                nmea_received[nmea_index++] = c;
+                sentence_complete = false;
+            } // Check if the character is the end of the sentence
+            else if ((c == '\n') && (nmea_index > 0)) {
+                nmea_received[nmea_index] = '\n';
+                nmea_received[nmea_index + 1] = '\0';
+                sentence_complete = true;
+            } // Add the character to the sentence
+            else if ((nmea_index > 0) && (nmea_index < MAX_NMEA_LENGTH - 1)) {
+                nmea_received[nmea_index++] = c;
+            }
+
+            // If we have a complete sentence
+            if (sentence_complete) {
+                // Reset flags and index
+                sentence_complete = false;
                 nmea_index = 0;
-                gprmc_sentence = false;
-            }
 
-            // Add the character to the received NMEA sentence
-            nmea_received[nmea_index++] = c;
-
-            // Examine the first 6 characters of the NMEA sentence
-            if (nmea_index == 6) {
-                // Check if the NMEA sentence is a GPRMC sentence
+                // Check if the sentence is a GPRMC sentence
                 if (strncmp(nmea_received, "$GPRMC", 6) == 0) {
-                    gprmc_sentence = true;
+                    // Parse the GPRMC sentence
+                    GPS_parse_gprmc(&gps, nmea_received);
+
+                    // If the GPS data is valid, print a summary
+                    if (gps.valid) {
+                        char summary[128];
+                        snprintf(summary, 128, "Lat: %s %c, Lon: %s %c, Speed: %s, Heading: %s\n",
+                                    gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
+                                    gps.speed, gps.heading);
+                        dbg_send_string(summary);
+                        GPS_invalidate(&gps);
+                    } else {
+                        // If the GPS data is invalid, print an error message
+                        dbg_send_string("Invalid GPS data!\n");
+                    }
+                } else {
+                    // Not a GPRMC sentence, ignore
                 }
-            }
-
-            // Check if the NMEA sentence is complete
-            if ((c == '\n') && gprmc_sentence) {
-                // Parse the NMEA sentence
-                GPS_parse_gprmc(&gps, nmea_received);
-
-                // Check if the GPS data is valid
-                if (GPS_is_valid(&gps)) {
-                    // Create string to hold GPS data
-                    sprintf(data, "Time: %s, Lat: %s %s, Lon: %s %s, Speed: %s, Heading: %s\n",
-                            gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir, gps.speed, gps.heading);
-
-                    // Send GPS data over software serial
-                    dbg_send_string(data);
-
-                    // Invalidate GPS data
-                    GPS_invalidate(&gps);
-                }
-                else {
-                    // Send invalid GPS data over software serial
-                    dbg_send_string("Invalid GPS data\n");
-                }
-            } else if (c == '\n') {
-                dbg_send_string("Not a GPRMC sentence\n");
             }
         }
     }
