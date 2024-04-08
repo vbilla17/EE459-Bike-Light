@@ -40,19 +40,22 @@ void dbg_init() {
 }
 
 bool dbg_send_char(char c) {
-    // Calculate next head index.
-    uint8_t next = (tx_head + 1) % TX_BUFFER_SIZE;
+    bool success = false;
 
-    // If buffer is not full, add character to buffer and update head index.
-    if (next != tx_tail) {
-        tx_buffer[tx_head] = c;
-        tx_head = next;
-        // If not already transmitting, start transmission.
-        if (!transmitting) transmitting = true;
-        return true;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        // Calculate next head index.
+        uint8_t next = (tx_head + 1) % TX_BUFFER_SIZE;
+
+        // If buffer is not full, add character to buffer and update head index.
+        if (next != tx_tail) {
+            tx_buffer[tx_head] = c;
+            tx_head = next;
+            // If not already transmitting, start transmission.
+            if (!transmitting) transmitting = true;
+            success = true;
+        }
     }
-
-    return false; // Buffer is full.
+    return success; // Buffer is full.
 }
 
 bool dbg_send_string(const char *str) {
@@ -64,9 +67,6 @@ bool dbg_send_string(const char *str) {
             break;
         }
     }
-    if (success) {
-        // dbg_send_char('\0'); // Send null character to indicate end of string.
-    }
     return success;
 }
 
@@ -75,26 +75,28 @@ ISR(TIMER1_COMPA_vect) {
     if (transmitting) {
         // If starting a new byte.
         if (bit_pos == 0) {
-            // If there's data in the buffer.
-            if (tx_head != tx_tail) {
-                // Fetch the next byte. and update tail index
-                tx_byte = tx_buffer[tx_tail];
-                tx_tail = (tx_tail + 1) % TX_BUFFER_SIZE;
-
-                // Start bit (pull TX pin low) and move to next bit position.
-                TX_PORT &= ~TX_MASK;
-                bit_pos++;
-            } // Otherwise, no more data to transmit.
-            else {
-                transmitting = false;
+            ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+                // If there's data in the buffer.
+                if (tx_head != tx_tail) {
+                    // Fetch the next byte. and update tail index
+                    tx_byte = tx_buffer[tx_tail];
+                    tx_tail = (tx_tail + 1) % TX_BUFFER_SIZE;
+                } // Otherwise, no more data to transmit.
+                else {
+                    transmitting = false;
+                    // Early exit to avoid pulling TX low when there's no data.
+                    return;
+                }
             }
+            // Start bit (pull TX pin low) and move to next bit position.
+            TX_PORT &= ~TX_MASK;
+            bit_pos++;
         } // Transmitting data bits.
         else if (bit_pos <= 8) {
-            if (tx_byte & 1) {
-                TX_PORT |= TX_MASK; // Send 1 (pull TX pin high).
-            } else {
-                TX_PORT &= ~TX_MASK; // Send 0 (pull TX pin low).
-            }
+            // Send 1 or 0 depending on the current bit.
+            if (tx_byte & 1) TX_PORT |= TX_MASK; 
+            else TX_PORT &= ~TX_MASK;
+        
             // Shift data byte to get next bit.
             tx_byte >>= 1;
             bit_pos++;

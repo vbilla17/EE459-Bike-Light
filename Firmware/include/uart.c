@@ -46,17 +46,29 @@ void uart_transmit_string(const uint8_t *data) {
 
 uint8_t uart_receive_byte() {
     uint8_t data = 0;
-    // Check if there is data in the receive buffer
-    if (rx_buffer_head != rx_buffer_tail) {
-        // Read a single byte from the receive buffer and increment the tail pointer
-        data = rx_buffer[rx_buffer_tail++];
-        rx_buffer_tail %= RX_BUFFER_SIZE;
+
+    // Protect critical section using shared variables
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        // Check if there is data in the receive buffer
+        if (rx_buffer_head != rx_buffer_tail) {
+            // Read a single byte from the receive buffer and increment the tail pointer
+            data = rx_buffer[rx_buffer_tail++];
+            rx_buffer_tail %= RX_BUFFER_SIZE;
+        }
     }
+
     return data;
 }
 
 uint8_t uart_available() {
-    return (uint8_t)((RX_BUFFER_SIZE + rx_buffer_head - rx_buffer_tail) % RX_BUFFER_SIZE);
+    uint8_t available_bytes;
+
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        // Calculate the number of bytes available in the receive buffer
+        available_bytes = (uint8_t)((RX_BUFFER_SIZE + rx_buffer_head - rx_buffer_tail) % RX_BUFFER_SIZE);
+    }
+
+    return available_bytes;
 }
 
 void uart_flush() {
@@ -66,16 +78,18 @@ void uart_flush() {
 }
 
 ISR(USART0_RX_vect) {
-    // Read the received data
-    uint8_t data = UDR0;
-    // Calculate the next head pointer
-    unsigned int next_head = (rx_buffer_head + 1) % RX_BUFFER_SIZE;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        // Read the received data
+        uint8_t data = UDR0;
+        // Calculate the next head pointer
+        unsigned int next_head = (rx_buffer_head + 1) % RX_BUFFER_SIZE;
 
-    // Check for overflow
-    if (next_head != rx_buffer_tail) {
-        rx_buffer[rx_buffer_head] = data;
-        rx_buffer_head = next_head;
-    } else {
-        // Buffer overflow, ignore data
+        // Check for overflow
+        if (next_head != rx_buffer_tail) {
+            rx_buffer[rx_buffer_head] = data;
+            rx_buffer_head = next_head;
+        } else {
+            // Buffer overflow, ignore data
+        }
     }
 }
