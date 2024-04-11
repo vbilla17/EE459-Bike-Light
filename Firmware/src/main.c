@@ -9,6 +9,7 @@
 #include "uart.h"
 #include "soft_serial_dbg.h"
 #include "gps.h"
+#include <avr/io.h>
 
 #include <util/delay.h>
 
@@ -28,6 +29,10 @@ int main() {
     // Flag to indicate if we are done receiving a sentence
     bool sentence_complete = false;
 
+    // Set up PC2 and PC3 as inputs
+    DDRC &= ~(1 << PC2);
+    DDRC &= ~(1 << PC3);
+
     // Initialize UART communication
     uart_init();
 
@@ -39,7 +44,7 @@ int main() {
 
     // Main loop
     while (1) {
-        // If there is data in the receive buffer
+        If there is data in the receive buffer
         if (uart_available() > 0) {
             // Read a single byte (character) from the receive buffer
             char c = uart_receive_byte();
@@ -85,6 +90,12 @@ int main() {
                     // Not a GPRMC sentence, ignore
                 }
             }
+        }
+        if (PINC & (1 << PC2)) {
+            uart_transmit_string((const uint8_t *)"Button 1 Pressed!\n");
+        }
+        if (PINC & (1 << PC3)) {
+            uart_transmit_string((const uint8_t *)"Button 2 Pressed!\n");
         }
     }
 
