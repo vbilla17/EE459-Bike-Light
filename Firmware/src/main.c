@@ -44,7 +44,7 @@ int main() {
 
     // Main loop
     while (1) {
-        If there is data in the receive buffer
+        // If there is data in the receive buffer
         if (uart_available() > 0) {
             // Read a single byte (character) from the receive buffer
             char c = uart_receive_byte();
