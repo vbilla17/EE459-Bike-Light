@@ -70,6 +70,16 @@ bool dbg_send_string(const char *str) {
     return success;
 }
 
+void dbg_flush() {
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        // Reset head and tail indices.
+        tx_head = 0;
+        tx_tail = 0;
+        // Stop transmitting.
+        transmitting = false;
+    }
+}
+
 ISR(TIMER1_COMPA_vect) {
     // If currently transmitting data.
     if (transmitting) {

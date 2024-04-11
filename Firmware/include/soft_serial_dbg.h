@@ -55,4 +55,6 @@ bool dbg_send_char(char c);
  */
 bool dbg_send_string(const char *str);
 
+void dbg_flush(void);
+
 #endif // SOFT_SERIAL_DBG_H
