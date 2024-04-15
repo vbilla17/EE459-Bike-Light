@@ -28,38 +28,60 @@ ser = serial.Serial("/dev/serial0", baudrate=9600, timeout=1)
 
 def read_sentence():
     ch = ser.read()
-    if ch.decode() == "$":
+    if ch.decode() == "L":
         while ch.decode() != "\n":
             ch = ser.read()
             sentence += ch.decode()
         print(sentence)
-        return sentence.strip("\n")
-    return ""
+        return "L" + sentence.strip("\n")
 
+
+# def parse_sentence(sentence):
+#     global lat, lon, speed, heading, time_status_bit, prev_time_status_bit, time_counter
+#     # sentence format:
+#     # $<lat>,<lat_dir>,<lon>,<lon_dir>,<speed>,<heading>,<start_stop>\n
+#     # $ddmm.mmmm,d,ddmm.mmmm,d,kk.kkk,dd.dd,s\n
+#     # Split the sentence by commas into components
+#     (
+#         raw_lat,
+#         raw_lat_dir,
+#         raw_lon,
+#         raw_lon_dir,
+#         raw_speed,
+#         raw_heading,
+#         raw_start_stop,
+#     ) = sentence.split(",")
+
+#     lat = convert_to_decimal(raw_lat, raw_lat_dir)
+#     lon = convert_to_decimal(raw_lon, raw_lon_dir)
+
+#     heading = raw_heading
+#     speed = raw_speed * 1.15  # convert from knots to mph
+#     prev_time_status_bit = time_status_bit
+#     time_status_bit = raw_start_stop
 
 def parse_sentence(sentence):
-    global lat, lon, speed, heading, time_status_bit, prev_time_status_bit, time_counter
-    # sentence format:
-    # $<lat>,<lat_dir>,<lon>,<lon_dir>,<speed>,<heading>,<start_stop>\n
-    # $ddmm.mmmm,d,ddmm.mmmm,d,kk.kkk,dd.dd,s\n
-    # Split the sentence by commas into components
-    (
-        raw_lat,
-        raw_lat_dir,
-        raw_lon,
-        raw_lon_dir,
-        raw_speed,
-        raw_heading,
-        raw_start_stop,
-    ) = sentence.split(",")
+    global lat, lon, speed, heading#, time_status_bit, prev_time_status_bit, time_counter
+    # Split the sentence by the labels into components
+    parts = sentence.split(", ")
 
-    lat = convert_to_decimal(raw_lat, raw_lat_dir)
-    lon = convert_to_decimal(raw_lon, raw_lon_dir)
+    # Extract and parse each component based on its label
+    for part in parts:
+        if 'Lat:' in part:
+            value, direction = part.replace("Lat: ", "").split()
+            lat = convert_to_decimal(value, direction)
+        elif 'Lon:' in part:
+            value, direction = part.replace("Lon: ", "").split()
+            lon = convert_to_decimal(value, direction)
+        elif 'Speed:' in part:
+            knot_speed = part.replace("Speed: ", "")
+            speed = knot_speed * 1.15 # Assuming speed is in knots
+        elif 'Heading:' in part:
+            raw_heading = part.replace("Heading: ", "")
+            heading = raw_heading
 
-    heading = raw_heading
-    speed = raw_speed * 1.15  # convert from knots to mph
-    prev_time_status_bit = time_status_bit
-    time_status_bit = raw_start_stop
+    # return gps_data
+
 
 
 # converts ddmm.mmmm to decimal degrees
@@ -71,10 +93,33 @@ def convert_to_decimal(coord, direction):
         decimal = -decimal
     return decimal
 
+example_sentences = [
+    "Lat: 3751.65 N, Lon: 12225.42 W, Speed: 12.3, Heading: 145.6\n",
+    "Lat: 4832.12 N, Lon: 0133.54 E, Speed: 8.7, Heading: 230.2\n",
+    "Lat: 3451.98 S, Lon: 05827.44 W, Speed: 15.5, Heading: 120.0\n",
+    "Lat: 4034.91 N, Lon: 07358.76 W, Speed: 20.1, Heading: 75.4\n",
+    "Lat: 0142.85 S, Lon: 03651.12 E, Speed: 9.9, Heading: 280.3\n",
+    "Lat: 5212.67 N, Lon: 00453.98 E, Speed: 7.8, Heading: 180.0\n",
+    "Lat: 3723.88 N, Lon: 12658.79 E, Speed: 4.5, Heading: 90.0\n",
+    "Lat: 5515.44 S, Lon: 06640.52 W, Speed: 3.6, Heading: 360.0\n",
+    "Lat: 2612.56 N, Lon: 08015.34 E, Speed: 12.2, Heading: 310.9\n",
+    "Lat: 3132.31 N, Lon: 07428.40 E, Speed: 13.4, Heading: 225.5\n",
+    "Lat: 4716.32 N, Lon: 00833.65 E, Speed: 6.7, Heading: 95.3\n",
+    "Lat: 6017.15 N, Lon: 02457.43 E, Speed: 11.9, Heading: 125.1\n",
+    "Lat: 0145.23 N, Lon: 10350.14 E, Speed: 16.3, Heading: 200.6\n",
+    "Lat: 2212.88 S, Lon: 04310.77 W, Speed: 14.7, Heading: 145.0\n",
+    "Lat: 5426.44 N, Lon: 01024.33 W, Speed: 5.5, Heading: 235.7\n",
+    "Lat: 4831.94 S, Lon: 12345.67 W, Speed: 8.2, Heading: 90.5\n",
+    "Lat: 1934.07 N, Lon: 09907.31 W, Speed: 17.8, Heading: 270.9\n",
+    "Lat: 3922.56 N, Lon: 11624.45 E, Speed: 10.3, Heading: 355.0\n",
+    "Lat: 2934.76 N, Lon: 09522.12 W, Speed: 19.6, Heading: 150.4\n",
+    "Lat: 0250.88 N, Lon: 10142.55 E, Speed: 2.4, Heading: 180.0\n"
+]
 
 def handle_data(root):
     global lat, lon, speed, heading, elapsed_time
-    while True:
+    i = 0
+    while i < len(example_sentences):
         if ser.in_waiting > 0:
             sentence = read_sentence()
             print(sentence)
@@ -87,9 +132,11 @@ def handle_data(root):
         if time_status_bit == 0 and prev_time_status_bit == 1:
             time_counter = 0
 
-        time.sleep(1.0)  # getting data every second
-
         root_tk.event_generate("<<data_ready>>")
+        
+        time.sleep(1.0)  # getting data every second
+        
+        ser.write(example_sentences[i])
 
 
 disp_width = 600
@@ -187,10 +234,10 @@ def move(event):
     compass_widget.update_arrow_direction(heading, "E")
     speed_value.config(text=f"{speed}")
 
-    hours = time_counter // 3600
-    remaining_seconds = time_counter % 3600
-    minutes = remaining_seconds // 60
-    seconds = remaining_seconds % 60
+    hours = 0 # time_counter // 3600
+    remaining_seconds = 0 # time_counter % 3600
+    minutes = 0 # remaining_seconds // 60
+    seconds = 0 # remaining_seconds % 60
 
     # Format the time into HH:MM:SS
     time_value.config(text=f"{hours:02}:{minutes:02}:{seconds:02}")
