@@ -9,11 +9,14 @@
 #include "uart.h"
 #include "soft_serial_dbg.h"
 #include "gps.h"
+#include "adc.h"
 #include <avr/io.h>
 
 #include <util/delay.h>
 
 #define MAX_NMEA_LENGTH 128
+#define OUTPUT_BUFFER_SIZE 128
+#define ADC_THRESHOLD 128
 
 int main() {
     // Create GPSData struct and initialize it
@@ -32,8 +35,11 @@ int main() {
     // Set up PD6 and PD7 as inputs for buttons, active low
     DDRD &= ~((1 << PD6) | (1 << PD7));
 
+    // Set PB7 as output for bike light
+    DDRB |= (1 << PB7);
+
     // Buffer to hold outgoing data
-    char outgoing_data[128];
+    char outgoing_data[OUTPUT_BUFFER_SIZE];
 
     // Counter to control the rate of outgoing data
     uint32_t counter = 0;
@@ -43,6 +49,9 @@ int main() {
 
     // Initialize software serial communication
     dbg_init();
+
+    // Initialize ADC
+    adc_init();
 
     // Enable global interrupts
     sei();
@@ -85,12 +94,21 @@ int main() {
         // Check if it is time to send data summary
         if (counter == 100000) {
             // gps_valid, time, lat, lat_dir, lon, lon_dir, speed, heading, btn1, btn2
-            snprintf(outgoing_data, 128, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c",
+            snprintf(outgoing_data, OUTPUT_BUFFER_SIZE, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c",
                      gps.valid ? '1' : '0', gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
                      gps.speed, gps.heading, (PIND & (1 << PD6)) ? '1' : '0', (PIND & (1 << PD7)) ? '1' : '0');
             dbg_send_string(outgoing_data);
             counter = 0;
         } else counter++;
+
+        // If ADC value is below threshold
+        if (adc_read() < ADC_THRESHOLD) {
+            // Turn on bike light
+            PORTB |= (1 << PB7);
+        } else {
+            // Turn off bike light
+            PORTB &= ~(1 << PB7);
+        }
     }
 
     return 0;
