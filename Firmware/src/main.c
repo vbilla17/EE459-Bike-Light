@@ -10,9 +10,10 @@
 #include "soft_serial_dbg.h"
 #include "gps.h"
 #include "adc.h"
-#include <avr/io.h>
 
+#include <avr/io.h>
 #include <util/delay.h>
+#include <stdio.h>
 
 #define MAX_NMEA_LENGTH 128
 #define OUTPUT_BUFFER_SIZE 128
@@ -41,11 +42,10 @@ int main() {
     // Buffer to hold outgoing data
     char outgoing_data[OUTPUT_BUFFER_SIZE];
 
-    but1_pressed = false;
-    but2_pressed = false;
-    but1_state = false;
-    but2_state = false;
-    
+    bool but1_pressed = false;
+    bool but2_pressed = false;
+    bool but1_state = false;
+    bool but2_state = false;
 
     // Counter to control the rate of outgoing data
     uint32_t counter = 0;
@@ -97,26 +97,28 @@ int main() {
             }
         }
 
-        if (PINB & (1 << PD6)) {
+        if (PIND & (1 << PD6)) {
             if (!but1_pressed) {
                 but1_state = !but1_state;
+                but1_pressed = true;
             }
         } else {
             but1_pressed = false;
         }
 
-        if (PINB & (1 << PD7)) {
+        if (PIND & (1 << PD7)) {
             if (!but2_pressed) {
                 but2_state = !but2_state;
+                but2_pressed = true;
             }
         } else {
             but2_pressed = false;
         }
 
         // Check if it is time to send data summary
-        if (counter == 100000) {
+        if (counter == 5000) {
             // gps_valid, time, lat, lat_dir, lon, lon_dir, speed, heading, btn1, btn2
-            snprintf(outgoing_data, OUTPUT_BUFFER_SIZE, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c",
+            snprintf(outgoing_data, OUTPUT_BUFFER_SIZE, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c\n",
                      gps.valid ? '1' : '0', gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
                      gps.speed, gps.heading, but1_state ? '1' : '0', but2_state ? '1' : '0');
             dbg_send_string(outgoing_data);

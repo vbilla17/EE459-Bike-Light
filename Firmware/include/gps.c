@@ -12,9 +12,9 @@ void GPS_init(GPSData* gps) {
     // Initialize all fields to 0
     memset (gps->time, 0, sizeof(gps->time));
     memset (gps->lat, 0, sizeof(gps->lat));
-    gps->lat_dir = '\0';
+    gps->lat_dir = '0';
     memset (gps->lon, 0, sizeof(gps->lon));
-    gps->lon_dir = '\0';
+    gps->lon_dir = '0';
     memset (gps->speed, 0, sizeof(gps->speed));
     memset (gps->heading, 0, sizeof(gps->heading));
     gps->valid = false;

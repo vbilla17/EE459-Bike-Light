@@ -12,6 +12,9 @@ void adc_init(void) {
 
     // Hardcode MUX to read ADC7
     ADMUX |= (1 << MUX2) | (1 << MUX1) | (1 << MUX0);
+
+    // Set reference voltage to internal reference
+    ADMUX |= (1 << REFS0);
 }
 
 uint8_t adc_read(void) {
