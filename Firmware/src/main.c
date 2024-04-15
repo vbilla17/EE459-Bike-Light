@@ -32,7 +32,11 @@ int main() {
     // Set up PD6 and PD7 as inputs for buttons, active low
     DDRD &= ~((1 << PD6) | (1 << PD7));
 
+    // Buffer to hold outgoing data
     char outgoing_data[128];
+
+    // Counter to control the rate of outgoing data
+    uint32_t counter = 0;
 
     // Initialize UART communication
     uart_init();
@@ -74,36 +78,19 @@ int main() {
                 if (strncmp(nmea_received, "$GPRMC", 6) == 0) {
                     // Parse the GPRMC sentence
                     GPS_parse_gprmc(&gps, nmea_received);
-
-                    // If the GPS data is valid, print a summary
-                    if (gps.valid) {
-                        // char summary[128];
-                        // snprintf(summary, 128, "Lat: %s %c, Lon: %s %c, Speed: %s, Heading: %s\n",
-                        //             gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
-                        //             gps.speed, gps.heading);
-                        // dbg_send_string(summary);
-
-                        // $GPS,time,lat,lat_dir,lon,lon_dir,speed,heading,
-                        snprintf(outgoing_data, 128, "$GPS,%s,%s,%c,%s,%c,%s,%s",
-                                 gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
-                                 gps.speed, gps.heading);
-                        dbg_send_string(outgoing_data);
-                        GPS_invalidate(&gps);
-                    } else {
-                        // If the GPS data is invalid, print an error message
-                        // dbg_send_string("Invalid GPS data!\n");
-                    }
-                } else {
-                    // Not a GPRMC sentence, ignore
                 }
             }
         }
-        if (!(PIND & (1 << PD6))) {
-            dbg_send_string("$BTN,1");
-        }
-        if (!(PIND & (1 << PD7))) {
-            dbg_send_string("$BTN,2");
-        }
+
+        // Check if it is time to send data summary
+        if (counter == 100000) {
+            // gps_valid, time, lat, lat_dir, lon, lon_dir, speed, heading, btn1, btn2
+            snprintf(outgoing_data, 128, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c",
+                     gps.valid ? '1' : '0', gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
+                     gps.speed, gps.heading, (PIND & (1 << PD6)) ? '1' : '0', (PIND & (1 << PD7)) ? '1' : '0');
+            dbg_send_string(outgoing_data);
+            counter = 0;
+        } else counter++;
     }
 
     return 0;
