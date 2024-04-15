@@ -29,9 +29,10 @@ int main() {
     // Flag to indicate if we are done receiving a sentence
     bool sentence_complete = false;
 
-    // Set up PC2 and PC3 as inputs
-    DDRC &= ~(1 << PC2);
-    DDRC &= ~(1 << PC3);
+    // Set up PD6 and PD7 as inputs for buttons, active low
+    DDRD &= ~((1 << PD6) | (1 << PD7));
+
+    char outgoing_data[128];
 
     // Initialize UART communication
     uart_init();
@@ -76,26 +77,32 @@ int main() {
 
                     // If the GPS data is valid, print a summary
                     if (gps.valid) {
-                        char summary[128];
-                        snprintf(summary, 128, "Lat: %s %c, Lon: %s %c, Speed: %s, Heading: %s\n",
-                                    gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
-                                    gps.speed, gps.heading);
-                        dbg_send_string(summary);
+                        // char summary[128];
+                        // snprintf(summary, 128, "Lat: %s %c, Lon: %s %c, Speed: %s, Heading: %s\n",
+                        //             gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
+                        //             gps.speed, gps.heading);
+                        // dbg_send_string(summary);
+
+                        // $GPS,time,lat,lat_dir,lon,lon_dir,speed,heading,
+                        snprintf(outgoing_data, 128, "$GPS,%s,%s,%c,%s,%c,%s,%s",
+                                 gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
+                                 gps.speed, gps.heading);
+                        dbg_send_string(outgoing_data);
                         GPS_invalidate(&gps);
                     } else {
                         // If the GPS data is invalid, print an error message
-                        dbg_send_string("Invalid GPS data!\n");
+                        // dbg_send_string("Invalid GPS data!\n");
                     }
                 } else {
                     // Not a GPRMC sentence, ignore
                 }
             }
         }
-        if (PINC & (1 << PC2)) {
-            uart_transmit_string((const uint8_t *)"Button 1 Pressed!\n");
+        if (!(PIND & (1 << PD6))) {
+            dbg_send_string("$BTN,1");
         }
-        if (PINC & (1 << PC3)) {
-            uart_transmit_string((const uint8_t *)"Button 2 Pressed!\n");
+        if (!(PIND & (1 << PD7))) {
+            dbg_send_string("$BTN,2");
         }
     }
 
