@@ -12,8 +12,17 @@
 #include <stdint.h>
 #include <avr/io.h>
 
+/**
+ * @brief Initialize the ADC module
+ * 
+ */
 void adc_init(void);
 
+/**
+ * @brief Read the ADC value
+ * 
+ * @return uint8_t ADC value
+ */
 uint8_t adc_read(void);
 
 #endif
