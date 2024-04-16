@@ -12,7 +12,6 @@
 #include "adc.h"
 
 #include <avr/io.h>
-#include <util/delay.h>
 #include <stdio.h>
 
 #define MAX_NMEA_LENGTH 128
@@ -42,13 +41,14 @@ int main() {
     // Buffer to hold outgoing data
     char outgoing_data[OUTPUT_BUFFER_SIZE];
 
+    // Flags to keep track of button state
     bool but1_pressed = false;
     bool but2_pressed = false;
     bool but1_state = false;
     bool but2_state = false;
 
     // Counter to control the rate of outgoing data
-    uint32_t counter = 0;
+    uint16_t counter = 0;
 
     // Initialize UART communication
     uart_init();
@@ -116,7 +116,7 @@ int main() {
         }
 
         // Check if it is time to send data summary
-        if (counter == 5000) {
+        if (counter == 1000) {
             // gps_valid, time, lat, lat_dir, lon, lon_dir, speed, heading, btn1, btn2
             snprintf(outgoing_data, OUTPUT_BUFFER_SIZE, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c\n",
                      gps.valid ? '1' : '0', gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
