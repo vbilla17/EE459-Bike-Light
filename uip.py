@@ -10,25 +10,25 @@ import os
 # global utc, status, lat, lon, lat_dir, lon_dir, heading, in_workout
 # global lat2, lon2
 
-global lat, lon, speed, heading, time_status_bit, prev_time_status_bit, time_counter
+global lat, lon, speed, heading, start_btn_bit, prev_start_btn_bit, stop_btn_bit, prev_stop_btn_bit, elapsed_time #, distance
 lat, lon = 34.02171, -118.28890
 speed = 0
 heading = 0
 time_status_bit = 0
-prev_time_status_bit = 0
-time_counter = 0
-
-# in_workout init to false
-# when in_workout = False, timer set to 0s, start button press will set it to True, stop button won't do anything
-# when in_workout = True, timer set to (time - time@start), start button won't do anything, stop buttonwill set it to False
+start_btn_bit = 1
+prev_start_btn_bit = 1
+stop_btn_bit = 1
+prev_stop_btn_bit = 1
+elapsed_time = 0
 
 
 ser = serial.Serial("/dev/serial0", baudrate=9600, timeout=1)
 
 
 def read_sentence():
-    ch = ser.read()
-    if ch.decode() == "$":
+    # while ch != '$':
+    #     ch = ser.read()
+    if ch.decode() == '$':
         while ch.decode() != "\n":
             ch = ser.read()
             sentence += ch.decode()
@@ -38,28 +38,37 @@ def read_sentence():
 
 
 def parse_sentence(sentence):
-    global lat, lon, speed, heading, time_status_bit, prev_time_status_bit, time_counter
+    global lat, lon, speed, heading, start_btn_bit, prev_start_btn_bit, stop_btn_bit, prev_stop_btn_bit
     # sentence format:
-    # $<lat>,<lat_dir>,<lon>,<lon_dir>,<speed>,<heading>,<start_stop>\n
+
+    # $<gps_valid><lat>,<lat_dir>,<lon>,<lon_dir>,<speed>,<heading>,<btn_1><btn_2>\n
     # $ddmm.mmmm,d,ddmm.mmmm,d,kk.kkk,dd.dd,s\n
     # Split the sentence by commas into components
     (
+        raw_gps_valid,
+        utc,
         raw_lat,
         raw_lat_dir,
         raw_lon,
         raw_lon_dir,
         raw_speed,
         raw_heading,
-        raw_start_stop,
+        raw_btn_1,
+        raw_btn_2,
     ) = sentence.split(",")
 
-    lat = convert_to_decimal(raw_lat, raw_lat_dir)
-    lon = convert_to_decimal(raw_lon, raw_lon_dir)
+    if int(raw_gps_valid) == 1:
+        lat = convert_to_decimal(raw_lat, raw_lat_dir)
+        lon = convert_to_decimal(raw_lon, raw_lon_dir)
 
-    heading = raw_heading
-    speed = raw_speed * 1.15  # convert from knots to mph
-    prev_time_status_bit = time_status_bit
-    time_status_bit = raw_start_stop
+        heading = raw_heading
+        speed = raw_speed * 1.15  # convert from knots to mph
+
+    prev_start_btn_bit = start_btn_bit
+    start_btn_bit = raw_btn_1
+    
+    prev_stop_btn_bit = stop_btn_bit
+    stop_btn_bit = raw_btn_2
 
 
 # converts ddmm.mmmm to decimal degrees
@@ -71,23 +80,54 @@ def convert_to_decimal(coord, direction):
         decimal = -decimal
     return decimal
 
+example_sentences = [
+    "$1,120305,4917.240,N,12310.640,W,5.5,270.0,1,0\n",
+    "$1,231547,4832.120,N,0133.540,E,8.7,230.2,0,1\n",
+    "$0,045120,3451.980,S,05827.440,W,15.5,120.0,1,1\n",
+    "$1,193045,4034.910,N,07358.760,W,20.1,75.4,0,0\n",
+    "$1,063210,0142.850,S,03651.120,E,9.9,280.3,0,1\n",
+    "$1,080559,5212.670,N,00453.980,E,7.8,180.0,1,0\n",
+    "$0,112300,3723.880,N,12658.790,E,4.5,90.0,1,1\n",
+    "$1,134500,5515.440,S,06640.520,W,3.6,360.0,0,0\n",
+    "$1,152634,2612.560,N,08015.340,E,12.2,310.9,0,1\n",
+    "$0,174823,3132.310,N,07428.400,E,13.4,225.5,1,0\n",
+    "$1,200907,4716.320,N,00833.650,E,6.7,95.3,0,1\n",
+    "$1,221500,6017.150,N,02457.430,E,11.9,125.1,1,1\n",
+    "$0,234159,0145.230,N,10350.140,E,16.3,200.6,0,0\n",
+    "$1,014510,2212.880,S,04310.770,W,14.7,145.0,0,1\n",
+    "$1,035620,5426.440,N,01024.330,W,5.5,235.7,1,0\n",
+    "$0,055730,4831.940,S,12345.670,W,8.2,90.5,0,0\n",
+    "$1,071840,1934.070,N,09907.310,W,17.8,270.9,0,1\n",
+    "$0,090950,3922.560,N,11624.450,E,10.3,355.0,1,1\n",
+    "$1,103405,2934.760,N,09522.120,W,19.6,150.4,0,0\n",
+    "$1,121517,0250.880,N,10142.550,E,2.4,180.0,1,0\n"
+]
+
 
 def handle_data(root):
     global lat, lon, speed, heading, elapsed_time
-    while True:
+    # while True:
+    for i in range(len(example_sentences)):
+        ser.write(example_sentences[i])
+        
+        time.sleep(1.0)
+        
         if ser.in_waiting > 0:
             sentence = read_sentence()
             print(sentence)
             parse_sentence(sentence)
         else:
             print("No data.")
+            continue
 
+        if time_status_bit == 0 and (start_btn_bit != prev_start_btn_bit):
+            time_status_bit = 1
+            
+        if time_status_bit == 1 and (stop_btn_bit != prev_stop_btn_bit):
+            time_status_bit = 0
+            
         if time_status_bit == 1:
-            time_counter += 1
-        if time_status_bit == 0 and prev_time_status_bit == 1:
-            time_counter = 0
-
-        time.sleep(1.0)  # getting data every second
+            elapsed_time += 1
 
         root_tk.event_generate("<<data_ready>>")
 
@@ -182,13 +222,13 @@ marker_canvas.place(relx=0.5, rely=0.5, anchor="center")
 
 
 def move(event):
-    global lat, lon, speed, heading, time_status_bit, prev_time_status_bit, time_counter
+    global lat, lon, speed, heading, time_status_bit, prev_time_status_bit, elapsed_time
     map_widget.set_position(lat, lon)
     compass_widget.update_arrow_direction(heading, "E")
     speed_value.config(text=f"{speed}")
 
-    hours = time_counter // 3600
-    remaining_seconds = time_counter % 3600
+    hours = elapsed_time // 3600
+    remaining_seconds = elapsed_time % 3600
     minutes = remaining_seconds // 60
     seconds = remaining_seconds % 60
 
