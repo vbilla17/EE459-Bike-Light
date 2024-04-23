@@ -24,9 +24,7 @@ void uart_init() {
     // Enable receive interrupt
     UCSR0B |= (1 << RXCIE0);
 
-    // Frame format is already set to 8 data bits, no parity, 1 stop bit
-
-    // Make sure global interrupts are enabled in the main program
+    // Frame format defaults to 8 data bits, no parity, 1 stop bit
 }
 
 void uart_transmit_byte(uint8_t data) {

@@ -22,7 +22,7 @@ void GPS_init(GPSData* gps) {
 }
 
 void GPS_parse_gprmc(GPSData* GPS, char* sentence) {
-    // Declare variables to hold parsed values, length needs to be larger than the max field length
+    // Declare variables to hold parsed values, length needs to be larger than the max field length, I arbitrarily chose 15
     char utc [15] = {0};
     char status = '\0';
     char lat [15] = {0};
@@ -33,7 +33,7 @@ void GPS_parse_gprmc(GPSData* GPS, char* sentence) {
     char heading [15] = {0};
     char mode = '\0';
 
-    // Check if the sentence is a valid RMC sentence
+    // Check if the sentence is a valid RMC sentence, should be redundant but just in case
     if (strncmp(sentence, "$GPRMC", 6) != 0) {
         GPS->valid = false;
         return;
@@ -55,7 +55,7 @@ void GPS_parse_gprmc(GPSData* GPS, char* sentence) {
         strncpy(GPS->heading, heading, MAX_HEADING_LEN);
         GPS->valid = true;
     } else {
-        // Invalid data
+        // Invalidate data
         GPS->valid = false;
     }
     return;

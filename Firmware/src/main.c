@@ -97,15 +97,20 @@ int main() {
             }
         }
 
+        // CIf button 1 is pressed
         if (PIND & (1 << PD6)) {
+            // If button 1 state is not already set
             if (!but1_pressed) {
+                // Toggle button 1 state and set pressed flag
                 but1_state = !but1_state;
                 but1_pressed = true;
             }
         } else {
+            // Otherwise clear pressed flag
             but1_pressed = false;
         }
 
+        // Same logic but for button 2
         if (PIND & (1 << PD7)) {
             if (!but2_pressed) {
                 but2_state = !but2_state;

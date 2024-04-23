@@ -8,6 +8,7 @@
  *          It uses a timer interrupt to transmit data at a fixed baud rate. This should
  *          work on any digital pin on the ATmega328pb microcontroller. The transmit buffer
  *          can be configured to any size by changing the TX_BUFFER_SIZE macro.
+ *
  */
 
 #ifndef SOFT_SERIAL_DBG_H

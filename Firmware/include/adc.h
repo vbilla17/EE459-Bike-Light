@@ -3,6 +3,8 @@
  * @author Vishal Billa (vbilla@usc.edu)
  * @brief Header file for ADC module on the ATmega328PB
  * @date 2024-03-04
+ * 
+ * @details This library provides functionality to read the ADC value from the ATmega328PB
  *
  */
 
