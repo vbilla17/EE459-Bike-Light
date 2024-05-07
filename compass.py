@@ -3,19 +3,18 @@ import math
 
 class CompassWidget(tk.Frame):
     def __init__(self, parent, width=200, **kwargs):
-        super().__init__(parent, bg='black', highlightthickness=0, **kwargs)  # Ensure the frame has no border
+        super().__init__(parent, bg='black', highlightthickness=0, **kwargs)  
         self.width = width
-        self.height = width  # Keep the widget square
+        self.height = width  
         self.canvas = tk.Canvas(self, width=self.width, height=self.height, bg='black', bd=0, highlightthickness=0)
         self.canvas.pack()
 
-        # Dynamically adjust dimensions to fit elements within the widget
-        self.circle_diameter = self.width * 0.7  # Leave more padding around the circle
+        self.circle_diameter = self.width * 0.7  
         self.circle_padding = (self.width - self.circle_diameter) / 2
         self.arrow_length = self.circle_diameter * 0.4
         self.tick_length = self.circle_diameter * 0.05
-        self.font_size = int(self.width / 15)  # Adjust font size based on widget width
-        self.label_offset = self.font_size * 1.5  # Adjust label offset
+        self.font_size = int(self.width / 15)  
+        self.label_offset = self.font_size * 1.5 
 
         self.draw_compass()
         self.update_arrow_direction(0, 'N')
@@ -27,7 +26,6 @@ class CompassWidget(tk.Frame):
             self.width - self.circle_padding, self.height - self.circle_padding,
             outline="white")
 
-        # Adjust label positions to ensure visibility within the widget
         label_dist_from_center = self.circle_diameter / 2 + self.label_offset
         directions = {
             'N': (center, center - label_dist_from_center),
