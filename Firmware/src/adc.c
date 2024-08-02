@@ -1,9 +1,9 @@
 /**
  * @file adc.c
- * @author Vishal Billa (vbilla@usc.edu)
- * @brief Implementation file for ADC module on the ATmega328PB
+ * @brief Implementation file for ADC module on the ATmega328PB.
  * @date 2024-03-04
- *
+ * 
+ * @author Vishal Billa (vbilla@usc.edu)
  */
 
 #include "adc.h"

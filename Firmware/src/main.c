@@ -1,13 +1,18 @@
 /**
  * @file main.c
- * @author Vishal Billa (vbilla@usc.edu)
- * @brief Main loop for the project
+ * @brief Main loop for the project.
  * @date 2024-03-04
- *
+ * 
+ * @details This file contains the main loop for the project, which integrates various modules
+ *          including UART, software serial for debugging, GPS parsing, and ADC reading.
+ *          The main loop handles reading GPS data, monitoring button states, controlling
+ *          a bike light based on ADC input, and periodically sending data summaries.
+ * 
+ * @author Vishal Billa (vbilla@usc.edu)
  */
 
 #include "uart.h"
-#include "soft_serial_dbg.h"
+#include "soft_serial.h"
 #include "gps.h"
 #include "adc.h"
 
@@ -18,7 +23,15 @@
 #define OUTPUT_BUFFER_SIZE 128
 #define ADC_THRESHOLD 128
 
-int main() {
+/**
+ * @brief Main function.
+ * 
+ * @details This function contains the main loop of the program, which handles UART communication,
+ *          GPS data parsing, button state monitoring, ADC reading, and bike light control.
+ * 
+ * @return int Returns 0 on successful execution.
+ */
+int main(void) {
     // Create GPSData struct and initialize it
     GPSData gps;
     GPS_init(&gps);
@@ -54,7 +67,7 @@ int main() {
     uart_init();
 
     // Initialize software serial communication
-    dbg_init();
+    ss_init();
 
     // Initialize ADC
     adc_init();
@@ -73,12 +86,14 @@ int main() {
             if ((c == '$') && (nmea_index == 0)) {
                 nmea_received[nmea_index++] = c;
                 sentence_complete = false;
-            } // Check if the character is the end of the sentence
+            } 
+            // Check if the character is the end of the sentence
             else if ((c == '\n') && (nmea_index > 0)) {
                 nmea_received[nmea_index] = '\n';
                 nmea_received[nmea_index + 1] = '\0';
                 sentence_complete = true;
-            } // Add the character to the sentence
+            } 
+            // Add the character to the sentence
             else if ((nmea_index > 0) && (nmea_index < MAX_NMEA_LENGTH - 1)) {
                 nmea_received[nmea_index++] = c;
             }
@@ -97,7 +112,7 @@ int main() {
             }
         }
 
-        // CIf button 1 is pressed
+        // If button 1 is pressed
         if (PIND & (1 << PD6)) {
             // If button 1 state is not already set
             if (!but1_pressed) {
@@ -126,9 +141,11 @@ int main() {
             snprintf(outgoing_data, OUTPUT_BUFFER_SIZE, "$%c,%s,%s,%c,%s,%c,%s,%s,%c,%c\n",
                      gps.valid ? '1' : '0', gps.time, gps.lat, gps.lat_dir, gps.lon, gps.lon_dir,
                      gps.speed, gps.heading, but1_state ? '1' : '0', but2_state ? '1' : '0');
-            dbg_send_string(outgoing_data);
+            ss_send_string(outgoing_data);
             counter = 0;
-        } else counter++;
+        } else {
+            counter++;
+        }
 
         // If ADC value is below threshold
         if (adc_read() < ADC_THRESHOLD) {

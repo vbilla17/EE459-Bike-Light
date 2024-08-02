@@ -5,21 +5,23 @@ PROGRAMMER = -c usbtiny -P usb
 SRC_DIR    = src
 INC_DIR    = include
 BUILD_DIR  = build
-SOURCES    = $(shell find $(SRC_DIR) $(INC_DIR) -name '*.c')
-OBJECTS    = $(SOURCES:%.c=$(BUILD_DIR)/%.o)
+SOURCES    = $(shell find $(SRC_DIR) -name '*.c')
+OBJECTS    = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
 FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0xe0:m
 
-AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -I$(INC_DIR)
+AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
+COMPILE    = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -I$(INC_DIR)
 
 # Symbolic targets:
-all:	$(BUILD_DIR)/main.hex
+.PHONY: all flash fuse install clean disasm cpp
 
-$(BUILD_DIR)/%.o: %.c
+all: $(BUILD_DIR)/main.hex
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
 	$(COMPILE) -c $< -o $@
 
-flash:	all
+flash: all
 	$(AVRDUDE) -U flash:w:$(BUILD_DIR)/main.hex:i
 
 fuse:
@@ -40,7 +42,7 @@ $(BUILD_DIR)/main.hex: $(BUILD_DIR)/main.elf
 	avr-size --format=avr --mcu=$(DEVICE) $<
 
 # Targets for code debugging and analysis:
-disasm:	$(BUILD_DIR)/main.elf
+disasm: $(BUILD_DIR)/main.elf
 	avr-objdump -d $<
 
 cpp:

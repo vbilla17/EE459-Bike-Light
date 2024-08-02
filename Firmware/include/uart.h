@@ -1,6 +1,5 @@
 /**
  * @file uart.h
- * @author Vishal Billa (vbilla@usc.edu)
  * @brief Header file for buffered UART communication.
  * @date 2024-03-04
  *
@@ -8,7 +7,8 @@
  *          use with the ATmega328pb microcontroller on USART0. The RX buffer size can be
  *          adjusted by changing the RX_BUFFER_SIZE macro. F_CPU must be defined in the
  *          Makefile or in the source code before using this library.
- *
+ * 
+ * @author Vishal Billa (vbilla@usc.edu)
  */
 
 #ifndef UART_H
@@ -18,7 +18,7 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 
-// Set the baud rate
+// Set the baud rate if not defined
 #ifndef BAUD
 #define BAUD 9600
 #endif
@@ -47,7 +47,7 @@ void uart_init(void);
 void uart_transmit_byte(uint8_t data);
 
 /**
- * @brief Transmit a string of data through UART.
+ * @brief Transmits a string of data through UART.
  * 
  * @param data The string of data to be transmitted.
  */

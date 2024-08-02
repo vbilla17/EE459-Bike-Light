@@ -1,15 +1,12 @@
 /**
- * @file soft_serial_dbg.c
- *
- * @author Vishal Billa (vbilla@usc.edu)
+ * @file soft_serial.c
+ * @brief Implementation file for software serial library.
  * @date 2024-03-23
  *
- * @brief Implementation file for software serial debug library.
- *
- * @copyright Copyright (c) 2024
+ * @author Vishal Billa (vbilla@usc.edu)
  */
 
-#include "soft_serial_dbg.h"
+#include "soft_serial.h"
 
 // TX pin mask
 #define TX_MASK (1 << TX_PIN)
@@ -26,7 +23,7 @@ static volatile bool transmitting = false;
 static volatile uint8_t tx_byte = 0;
 static volatile uint8_t bit_pos = 0;
 
-void dbg_init() {
+void ss_init(void) {
     // Set transmit pin as output and pull high.
     TX_DDR |= TX_MASK;
     TX_PORT |= TX_MASK;
@@ -39,7 +36,7 @@ void dbg_init() {
     TCCR1B |= (1 << CS10); // Start the timer with no prescaler.
 }
 
-bool dbg_send_char(char c) {
+bool ss_send_char(char c) {
     bool success = false;
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
@@ -51,18 +48,20 @@ bool dbg_send_char(char c) {
             tx_buffer[tx_head] = c;
             tx_head = next;
             // If not already transmitting, start transmission.
-            if (!transmitting) transmitting = true;
+            if (!transmitting) {
+                transmitting = true;
+            }
             success = true;
         }
     }
     return success; // Buffer is full.
 }
 
-bool dbg_send_string(const char *str) {
+bool ss_send_string(const char *str) {
     bool success = true;
     // Send each character in the string.
     while (*str) {
-        if (!dbg_send_char(*str++)) {
+        if (!ss_send_char(*str++)) {
             success = false; // Failed to send a character.
             break;
         }
@@ -70,7 +69,7 @@ bool dbg_send_string(const char *str) {
     return success;
 }
 
-void dbg_flush() {
+void ss_flush(void) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         // Reset head and tail indices.
         tx_head = 0;
@@ -80,6 +79,13 @@ void dbg_flush() {
     }
 }
 
+/**
+ * @brief ISR for Timer1 Compare Match A.
+ * 
+ * @details This ISR is called when Timer1 reaches the compare match value. It handles
+ *          the bitwise transmission of the current byte in the transmit buffer, setting
+ *          the TX pin accordingly.
+ */
 ISR(TIMER1_COMPA_vect) {
     // If currently transmitting data.
     if (transmitting) {
@@ -104,8 +110,11 @@ ISR(TIMER1_COMPA_vect) {
         } // Transmitting data bits.
         else if (bit_pos <= 8) {
             // Send 1 or 0 depending on the current bit.
-            if (tx_byte & 1) TX_PORT |= TX_MASK; 
-            else TX_PORT &= ~TX_MASK;
+            if (tx_byte & 1) {
+                TX_PORT |= TX_MASK; 
+            } else {
+                TX_PORT &= ~TX_MASK;
+            }
         
             // Shift data byte to get next bit.
             tx_byte >>= 1;

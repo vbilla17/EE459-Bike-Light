@@ -1,9 +1,9 @@
 /**
  * @file uart.c
- * @author Vishal Billa (vbilla@usc.edu)
- * @brief Implementation file for UART communication library
+ * @brief Implementation file for UART communication library.
  * @date 2024-03-04
  * 
+ * @author Vishal Billa (vbilla@usc.edu)
  */
 
 #include "uart.h"
@@ -13,7 +13,7 @@ volatile uint8_t rx_buffer[RX_BUFFER_SIZE];
 volatile uint8_t rx_buffer_head = 0;
 volatile uint8_t rx_buffer_tail = 0;
 
-void uart_init() {
+void uart_init(void) {
     // Set baud rate based on the calculated value
     UBRR0H = (uint8_t)(BAUD_REG >> 8);
     UBRR0L = (uint8_t)BAUD_REG;
@@ -42,7 +42,7 @@ void uart_transmit_string(const uint8_t *data) {
     }
 }
 
-uint8_t uart_receive_byte() {
+uint8_t uart_receive_byte(void) {
     uint8_t data = 0;
 
     // Protect critical section using shared variables
@@ -58,7 +58,7 @@ uint8_t uart_receive_byte() {
     return data;
 }
 
-uint8_t uart_available() {
+uint8_t uart_available(void) {
     uint8_t available_bytes;
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
@@ -69,12 +69,19 @@ uint8_t uart_available() {
     return available_bytes;
 }
 
-void uart_flush() {
+void uart_flush(void) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         rx_buffer_head = rx_buffer_tail = 0;
     }
 }
 
+/**
+ * @brief ISR for UART receive complete interrupt.
+ * 
+ * @details This ISR is called when a byte is received on the UART. It stores the received
+ *          byte in the receive buffer, handling buffer overflow by discarding new data if
+ *          the buffer is full.
+ */
 ISR(USART0_RX_vect) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         // Read the received data
