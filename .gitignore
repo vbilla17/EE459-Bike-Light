@@ -1,0 +1,10 @@
+# Ignore build directory
+Firmware/build/
+
+# Ignore DS_Store files
+.DS_Store
+Firmware/.DS_Store
+
+# Ignore editor/IDE files
+.vscode/
+.idea/
